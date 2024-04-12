@@ -10,10 +10,13 @@ class Entity;
 
 class World {
 public:
+	World();
+	~World();
 	void ProcessInput(string input);
 	bool DetectVerb(string input);
+	void Start();
 
-private:
+public:
 	vector<Entity*> entities;
 
 };

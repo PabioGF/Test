@@ -3,17 +3,8 @@
 #define EXIT_HPP
 
 
+#include "entity.h"
+
 using namespace std;
 
-class Room;
-
-class Creature {
-public:
-	enum direction;
-	Room* source;
-	Room* destinastion;
-
-private:
-
-};
 #endif // !EXIT

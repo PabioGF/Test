@@ -2,8 +2,49 @@
 #include <string>  
 #include <conio.h>
 #include "world.h"
+#include "room.h"
+#include "creature.h"
+#include "player.h"
 
 using namespace std;
+
+
+World::World() {
+    Room* startingRoom = new Room("Starting room", "you are in the starting room, there's nothig more to see");
+    Player*  player = new Player("you", "you are very handsome",startingRoom);
+
+    entities.push_back(startingRoom);
+    entities.push_back(player);
+}
+
+World::~World() {
+    for (Entity* entity : entities) {
+        delete entity;
+    }
+}
+
+void World::Start() {
+
+    Creature* player = static_cast<Creature*>(entities[1]);
+
+    Room* startingRoom = static_cast<Room*>(entities[0]);
+
+    // Show initial infrmation about bplayer and the room he is in
+    if (player) {
+        std::cout << player->GetName() << ": " << player->GetDescription() << std::endl;
+    }
+    else {
+        std::cout << "No se ha encontrado el jugador en el mundo." << std::endl;
+    }
+
+    if (startingRoom) {
+        std::cout << startingRoom->GetName() << ": "  << startingRoom->GetDescription() << std::endl;
+    }
+    else {
+        std::cout << "No se ha encontrado la habitacion inicial en el mundo." << std::endl;
+    }
+}
+
 
 void World::ProcessInput(string input) {
     string inputLower = input;
@@ -87,7 +128,6 @@ bool World::DetectVerb(string inputLower) {
             std::cout << "heading north" << std::endl;
         }
         else {
-            std::cout << "hola" << std::endl;
             noRecognize = true;
         }
     }

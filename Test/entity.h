@@ -14,7 +14,10 @@ public:
 	string name, description;
 	list<Entity*> contains;
 public:
-	virtual void Update();
+	//virtual void Update();
+	string GetName();
+	string GetDescription();
+	Entity(const std::string& name, const std::string& description): name(name), description(description) {}
 
 
 };

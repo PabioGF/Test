@@ -10,7 +10,7 @@ int main()
     World world;
 
     cout << "Welcome to Pablo's Zork!\n";
-
+    world.Start();
     while (true) {
         string input;
         getline(cin, input);
