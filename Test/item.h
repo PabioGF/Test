@@ -7,4 +7,11 @@
 
 using namespace std;
 
+
+class Item : public Entity {
+public:
+	Item(const std::string& name, const std::string& description);
+
+
+};
 #endif // !EXIT

@@ -5,16 +5,42 @@
 #include "room.h"
 #include "creature.h"
 #include "player.h"
+#include "npc.h"
+#include "item.h"
 
 using namespace std;
 
 
 World::World() {
-    Room* startingRoom = new Room("Starting room", "you are in the starting room, there's nothig more to see");
-    Player*  player = new Player("you", "you are very handsome",startingRoom);
+    Room* startingRoom = new Room("Entrance hall", "You are in the Entrance hall, there's nothig here to see.");
+    Room* kitchen = new Room("Kitchen", "Here you can cook you som eggs and pasta that someone left on the fride, unless you are alergic to pasta, or eggs...");
+    Room* livingRoom = new Room("Living Room", "Here is the heart of the house, wit conection with the entrance hall, the bathroom and Jimmy's bedroom.");
+    Room* bedroom = new Room("Bedroom","Here is Jimmy lying in his bed, hes very bored, he wishes he could talk to somebody.");
+    Room* bathroom = new Room("Bathroom", "A normal bathroom except that, strangely enough, it has an exit door. Who puts an exit door in a bathroom? ");
+
+
+
+    Player*  player = new Player("you", "You are very handsome.",startingRoom);
+    Npc* jimmy = new Npc("Jimmy", "He talks a lot, don't talk to him unless is absolutly necessary.", bedroom);
+    Item* egg = new Item("Egg","An egg, hopes nothing alive inside.");
+    Item* pasta = new Item("Pasta", "Pasta, you know ho loved pasta? I don't.");
+    Item* key = new Item("Key", "Key of the door in the bathroom");
+
+    entities.push_back(player);
 
     entities.push_back(startingRoom);
-    entities.push_back(player);
+    entities.push_back(kitchen);
+    entities.push_back(livingRoom);
+    entities.push_back(bedroom);
+    entities.push_back(bathroom);
+
+    entities.push_back(jimmy);
+    entities.push_back(egg);
+    entities.push_back(pasta);
+    entities.push_back(key);
+
+    
+    
 }
 
 World::~World() {
@@ -25,9 +51,9 @@ World::~World() {
 
 void World::Start() {
 
-    Creature* player = static_cast<Creature*>(entities[1]);
+    Creature* player = static_cast<Creature*>(entities[0]);
 
-    Room* startingRoom = static_cast<Room*>(entities[0]);
+    Room* startingRoom = static_cast<Room*>(entities[1]);
 
     // Show initial infrmation about bplayer and the room he is in
     if (player) {
