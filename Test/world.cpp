@@ -20,7 +20,7 @@ World::World() {
 
 
 
-    Player*  player = new Player("you", "You are very handsome.",startingRoom);
+    Player*  player = new Player("You", "You are very handsome.",startingRoom);
     Npc* jimmy = new Npc("Jimmy", "He talks a lot, don't talk to him unless is absolutly necessary.", bedroom);
     Item* egg = new Item("Egg","An egg, hopes nothing alive inside.");
     Item* pasta = new Item("Pasta", "Pasta, you know ho loved pasta? I don't.");
@@ -51,11 +51,7 @@ World::~World() {
 
 void World::Start() {
 
-   
-
     Player* player = static_cast<Player*>(entities[0]);
-
-    Room* startingRoom = static_cast<Room*>(entities[1]);
 
     // Show initial infrmation about bplayer and the room he is in
     if (player) {
@@ -64,13 +60,46 @@ void World::Start() {
     else {
         std::cout << "No se ha encontrado el jugador en el mundo." << std::endl;
     }
+    
+    RoomDescription();
+}
 
-    if (startingRoom) {
-        std::cout << startingRoom->GetName() << ": "  << startingRoom->GetDescription() << std::endl;
+void World::RoomDescription() {
+    Player* player = static_cast<Player*>(entities[0]);
+    Room* actualRoom = player->GetRoom();
+    vector<string> neighbor;
+    string direction;
+    neighbor.push_back(actualRoom->GetNorthNeighbor());
+    neighbor.push_back(actualRoom->GetSouthNeighbor());
+    neighbor.push_back(actualRoom->GetEastNeighbor());
+    neighbor.push_back(actualRoom->GetWestNeighbor());
+    std::cout << actualRoom->GetName() << ": " << actualRoom->GetDescription() << std::endl;
+
+    for (int i = 0; i < neighbor.size(); i++) {
+        if (strcmp(neighbor[i].c_str(), "nothing") != 0) {
+            switch (i)
+            {
+            case 0:
+                direction = "North";
+                break;
+            case 1:
+                direction = "South";
+                break;
+            case 2:
+                direction = "East";
+                break;
+            case 3:
+                direction = "West";
+                break;
+            default:
+
+                break;
+            }
+
+            std::cout << "  - At " << direction << " is the " << neighbor[i] << std::endl;
+        }
     }
-    else {
-        std::cout << "No se ha encontrado la habitacion inicial en el mundo." << std::endl;
-    }
+
 }
 
 bool World:: MovePlayer(string neighbor){
@@ -109,6 +138,7 @@ bool World:: MovePlayer(string neighbor){
         }
 
         player->UpdateLocation(destination);
+        RoomDescription();
     }
 
     return theresNeighbor;

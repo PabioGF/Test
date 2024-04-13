@@ -17,6 +17,7 @@ public:
 	void Start();
 	bool MovePlayer(string neighbor);
 	bool LookRooms(int direction);
+	void RoomDescription();
 
 public:
 	vector<Entity*> entities;
