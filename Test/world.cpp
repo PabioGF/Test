@@ -75,7 +75,7 @@ void World::RoomDescription() {
     neighbor.push_back(actualRoom->GetWestNeighbor());
     std::cout << actualRoom->GetName() << ": " << actualRoom->GetDescription() << std::endl;
 
-    RoomContainsItem();
+    RoomContainsSomething();
 
     for (int i = 0; i < neighbor.size(); i++) {
         if (strcmp(neighbor[i].c_str(), "nothing") != 0) {
@@ -103,17 +103,23 @@ void World::RoomDescription() {
     }
 
 }
-void World::RoomContainsItem() {
+void World::RoomContainsSomething() {
     Player* player = dynamic_cast<Player*>(entities[0]);
     Room* actualRoom = player->GetRoom();
 
     for (Entity* entity : entities) {
         Item* item = dynamic_cast<Item*>(entity);
-       
+        Npc* npc = dynamic_cast<Npc*>(entity);
         if (item) {
             if (item->GetOwner() == actualRoom) {
                 std::cout << "There's an item in this room: " << item->GetName() << std::endl;
                 
+            }
+        }
+        if (npc) {
+            if (npc->GetRoom() == actualRoom) {
+                std::cout << "There's someone in this room: " << npc->GetName() <<"(" << npc->GetDescription() << ")" << std::endl;
+
             }
         }
     }

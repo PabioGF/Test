@@ -19,7 +19,7 @@ public:
 	bool MovePlayer(string neighbor);
 	bool LookRooms(int direction);
 	void RoomDescription();
-	void RoomContainsItem();
+	void RoomContainsSomething();
 
 public:
 	vector<Entity*> entities;
