@@ -15,6 +15,8 @@ public:
 	void ProcessInput(string input);
 	bool DetectVerb(string input);
 	void Start();
+	bool MovePlayer(string neighbor);
+	bool LookRooms(int direction);
 
 public:
 	vector<Entity*> entities;

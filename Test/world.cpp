@@ -12,11 +12,11 @@ using namespace std;
 
 
 World::World() {
-    Room* startingRoom = new Room("Entrance hall", "You are in the Entrance hall, there's nothig here to see.");
-    Room* kitchen = new Room("Kitchen", "Here you can cook you som eggs and pasta that someone left on the fride, unless you are alergic to pasta, or eggs...");
-    Room* livingRoom = new Room("Living Room", "Here is the heart of the house, wit conection with the entrance hall, the bathroom and Jimmy's bedroom.");
-    Room* bedroom = new Room("Bedroom","Here is Jimmy lying in his bed, hes very bored, he wishes he could talk to somebody.");
-    Room* bathroom = new Room("Bathroom", "A normal bathroom except that, strangely enough, it has an exit door. Who puts an exit door in a bathroom? ");
+    Room* startingRoom = new Room("Entrance Hall", "You are in the Entrance hall, there's nothig here to see.", "nothing","Kitchen", "Living Room", "nothing");
+    Room* kitchen = new Room("Kitchen", "Here you can cook you som eggs and pasta that someone left on the fride, unless you are alergic to pasta, or eggs...", "Entrance Hall", "nothing", "nothing", "nothing");
+    Room* livingRoom = new Room("Living Room", "Here is the heart of the house, wit conection with the entrance hall, the bathroom and Jimmy's bedroom.", "Bathroom", "nothing", "Bedroom", "Entrance Hall");
+    Room* bedroom = new Room("Bedroom","Here is Jimmy lying in his bed, hes very bored, he wishes he could talk to somebody.", "nothing", "nothing", "nothing", "Living Room");
+    Room* bathroom = new Room("Bathroom", "A normal bathroom except that, strangely enough, it has an exit door. Who puts an exit door in a bathroom? ", "nothing", "Living Room", "nothing", "nothing");
 
 
 
@@ -51,7 +51,9 @@ World::~World() {
 
 void World::Start() {
 
-    Creature* player = static_cast<Creature*>(entities[0]);
+   
+
+    Player* player = static_cast<Player*>(entities[0]);
 
     Room* startingRoom = static_cast<Room*>(entities[1]);
 
@@ -71,9 +73,82 @@ void World::Start() {
     }
 }
 
+bool World:: MovePlayer(string neighbor){
+    Player* player = static_cast<Player*>(entities[0]);
+    Room* destination = static_cast<Room*>(entities[1]);;
+    bool theresNeighbor = true;
+    
+    if (strcmp(neighbor.c_str(), "nothing") == 0) {
+        theresNeighbor = false;
+    }
+    else {
+        if (strcmp(neighbor.c_str(), "Kitchen") == 0) {
+            theresNeighbor = true;
+            std::cout << "heading Kitchen" << std::endl;
+            destination = static_cast<Room*>(entities[2]);
+        }
+        if (strcmp(neighbor.c_str(), "Entrance Hall") == 0) {
+            theresNeighbor = true;
+            std::cout << "heading Entrance Hall" << std::endl;
+            destination = static_cast<Room*>(entities[1]);
+        }
+        if (strcmp(neighbor.c_str(), "Living Room") == 0) {
+            theresNeighbor = true;
+            std::cout << "heading Living Room"<< std::endl;
+            destination = static_cast<Room*>(entities[3]);
+        }
+        if (strcmp(neighbor.c_str(), "Bedroom") == 0) {
+            theresNeighbor = true;
+            std::cout << "heading Bedroom" << std::endl;
+            destination = static_cast<Room*>(entities[4]);
+        }
+        if (strcmp(neighbor.c_str(), "Bathroom") == 0) {
+            theresNeighbor = true;
+            std::cout << "heading Bathroom" << std::endl;
+            destination = static_cast<Room*>(entities[5]);
+        }
+
+        player->UpdateLocation(destination);
+    }
+
+    return theresNeighbor;
+
+
+}
+
+bool World::LookRooms(int direction) {
+    Player* player = static_cast<Player*>(entities[0]);
+    Room* actualRoom = player->GetRoom();
+    string neighbor;
+    bool theresNeigbor = true;
+    switch (direction)
+    {
+    case 1:
+        neighbor = actualRoom->GetNorthNeighbor();
+        break;
+    case 2:
+        neighbor = actualRoom->GetSouthNeighbor();
+        break;
+    case 3:
+        neighbor = actualRoom->GetEastNeighbor();
+        break;
+    case 4:
+        neighbor = actualRoom->GetWestNeighbor();
+        break;
+    default:
+        neighbor = "nothing";
+        theresNeigbor = false;
+        break;
+    }
+    //std::cout << neighbor << std::endl;
+    theresNeigbor = MovePlayer(neighbor);
+
+    return theresNeigbor;
+}
 
 void World::ProcessInput(string input) {
     string inputLower = input;
+    int direction = 0;
     bool noRecognize = true;
     for (char& character : inputLower) {
         character = std::tolower(character);
@@ -90,6 +165,9 @@ void World::ProcessInput(string input) {
         char charAfter = (northPos + 5 >= inputLower.size()) ? ' ' : inputLower[northPos + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             noRecognize = DetectVerb(inputLower);
+            if (!noRecognize) {
+                direction = 1;
+            }
         }
         else {
             
@@ -102,6 +180,9 @@ void World::ProcessInput(string input) {
         char charAfter = (southPos + 5 >= inputLower.size()) ? ' ' : inputLower[southPos + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             noRecognize = DetectVerb(inputLower);
+            if (!noRecognize) {
+                direction = 2;
+            }
         }
         else {
             noRecognize = true;
@@ -113,6 +194,9 @@ void World::ProcessInput(string input) {
         char charAfter = (eastPos + 5 >= inputLower.size()) ? ' ' : inputLower[eastPos + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             noRecognize = DetectVerb(inputLower);
+            if (!noRecognize) {
+                direction = 3;
+            }
         }
         else {
             noRecognize = true;
@@ -124,6 +208,9 @@ void World::ProcessInput(string input) {
         char charAfter = (westPos + 5 >= inputLower.size()) ? ' ' : inputLower[westPos + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             noRecognize = DetectVerb(inputLower);
+            if (!noRecognize) {
+                direction = 4;
+            }
         }
         else {
             noRecognize = true;
@@ -139,6 +226,11 @@ void World::ProcessInput(string input) {
     if (noRecognize) {
         std::cout << "Comando no reconocido." << std::endl;
     }
+    else {
+        if (!LookRooms(direction)){
+            std::cout << "There's nothing in that direction" << std::endl;
+        }
+    }
 
 }
 
@@ -151,7 +243,7 @@ bool World::DetectVerb(string inputLower) {
         char charAfter = (goPos + 5 >= inputLower.size()) ? ' ' : inputLower[goPos + 5];
         if (std::isalpha(charAfter)) {
             noRecognize = false;
-            std::cout << "heading north" << std::endl;
+            
         }
         else {
             noRecognize = true;
