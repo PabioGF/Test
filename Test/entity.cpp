@@ -6,6 +6,10 @@
 
 using namespace std;
 
+void Entity::Update() {
+	
+}
+
 string Entity::GetName() {
 	return name;
 }

@@ -6,4 +6,8 @@
 
 using namespace std;
 
-Item::Item(const std::string& name, const std::string& description) : Entity(name, description) {}
+Item::Item(const std::string& name, const std::string& description, Entity* owner) : Entity(name, description), owner(owner) {}
+
+Entity* Item::GetOwner() {
+	return owner;
+}

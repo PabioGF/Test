@@ -22,9 +22,9 @@ World::World() {
 
     Player*  player = new Player("You", "You are very handsome.",startingRoom);
     Npc* jimmy = new Npc("Jimmy", "He talks a lot, don't talk to him unless is absolutly necessary.", bedroom);
-    Item* egg = new Item("Egg","An egg, hopes nothing alive inside.");
-    Item* pasta = new Item("Pasta", "Pasta, you know ho loved pasta? I don't.");
-    Item* key = new Item("Key", "Key of the door in the bathroom");
+    Item* egg = new Item("Egg","An egg, hopes nothing alive inside.", kitchen);
+    Item* pasta = new Item("Pasta", "Pasta, you know ho loved pasta? I don't.", kitchen);
+    Item* key = new Item("Key", "Key of the door in the bathroom", jimmy);
 
     entities.push_back(player);
 
@@ -51,7 +51,7 @@ World::~World() {
 
 void World::Start() {
 
-    Player* player = static_cast<Player*>(entities[0]);
+    Player* player = dynamic_cast<Player*>(entities[0]);
 
     // Show initial infrmation about bplayer and the room he is in
     if (player) {
@@ -65,7 +65,7 @@ void World::Start() {
 }
 
 void World::RoomDescription() {
-    Player* player = static_cast<Player*>(entities[0]);
+    Player* player = dynamic_cast<Player*>(entities[0]);
     Room* actualRoom = player->GetRoom();
     vector<string> neighbor;
     string direction;
@@ -74,6 +74,8 @@ void World::RoomDescription() {
     neighbor.push_back(actualRoom->GetEastNeighbor());
     neighbor.push_back(actualRoom->GetWestNeighbor());
     std::cout << actualRoom->GetName() << ": " << actualRoom->GetDescription() << std::endl;
+
+    RoomContainsItem();
 
     for (int i = 0; i < neighbor.size(); i++) {
         if (strcmp(neighbor[i].c_str(), "nothing") != 0) {
@@ -101,10 +103,26 @@ void World::RoomDescription() {
     }
 
 }
+void World::RoomContainsItem() {
+    Player* player = dynamic_cast<Player*>(entities[0]);
+    Room* actualRoom = player->GetRoom();
+
+    for (Entity* entity : entities) {
+        Item* item = dynamic_cast<Item*>(entity);
+       
+        if (item) {
+            if (item->GetOwner() == actualRoom) {
+                std::cout << "There's an item in this room: " << item->GetName() << std::endl;
+                
+            }
+        }
+    }
+
+}
 
 bool World:: MovePlayer(string neighbor){
-    Player* player = static_cast<Player*>(entities[0]);
-    Room* destination = static_cast<Room*>(entities[1]);;
+    Player* player = dynamic_cast<Player*>(entities[0]);
+    Room* destination = dynamic_cast<Room*>(entities[1]);;
     bool theresNeighbor = true;
     
     if (strcmp(neighbor.c_str(), "nothing") == 0) {
@@ -114,27 +132,27 @@ bool World:: MovePlayer(string neighbor){
         if (strcmp(neighbor.c_str(), "Kitchen") == 0) {
             theresNeighbor = true;
             std::cout << "heading Kitchen" << std::endl;
-            destination = static_cast<Room*>(entities[2]);
+            destination = dynamic_cast<Room*>(entities[2]);
         }
         if (strcmp(neighbor.c_str(), "Entrance Hall") == 0) {
             theresNeighbor = true;
             std::cout << "heading Entrance Hall" << std::endl;
-            destination = static_cast<Room*>(entities[1]);
+            destination = dynamic_cast<Room*>(entities[1]);
         }
         if (strcmp(neighbor.c_str(), "Living Room") == 0) {
             theresNeighbor = true;
             std::cout << "heading Living Room"<< std::endl;
-            destination = static_cast<Room*>(entities[3]);
+            destination = dynamic_cast<Room*>(entities[3]);
         }
         if (strcmp(neighbor.c_str(), "Bedroom") == 0) {
             theresNeighbor = true;
             std::cout << "heading Bedroom" << std::endl;
-            destination = static_cast<Room*>(entities[4]);
+            destination = dynamic_cast<Room*>(entities[4]);
         }
         if (strcmp(neighbor.c_str(), "Bathroom") == 0) {
             theresNeighbor = true;
             std::cout << "heading Bathroom" << std::endl;
-            destination = static_cast<Room*>(entities[5]);
+            destination = dynamic_cast<Room*>(entities[5]);
         }
 
         player->UpdateLocation(destination);
@@ -147,7 +165,7 @@ bool World:: MovePlayer(string neighbor){
 }
 
 bool World::LookRooms(int direction) {
-    Player* player = static_cast<Player*>(entities[0]);
+    Player* player = dynamic_cast<Player*>(entities[0]);
     Room* actualRoom = player->GetRoom();
     string neighbor;
     bool theresNeigbor = true;
@@ -184,17 +202,19 @@ void World::ProcessInput(string input) {
         character = std::tolower(character);
     }
 
+    //CHECK DIRECTIONS
 
     size_t northPos = inputLower.find("north");
     size_t southPos = inputLower.find("south");
     size_t eastPos = inputLower.find("east");
     size_t westPos = inputLower.find("west");
+    
     if (northPos != std::string::npos) {
         //Check if the word has spaces 
         char charBefore = (northPos == 0) ? ' ' : inputLower[northPos - 1];
         char charAfter = (northPos + 5 >= inputLower.size()) ? ' ' : inputLower[northPos + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
-            noRecognize = DetectVerb(inputLower);
+            noRecognize = DetectDirectionVerb(inputLower);
             if (!noRecognize) {
                 direction = 1;
             }
@@ -209,7 +229,7 @@ void World::ProcessInput(string input) {
         char charBefore = (southPos == 0) ? ' ' : inputLower[southPos - 1];
         char charAfter = (southPos + 5 >= inputLower.size()) ? ' ' : inputLower[southPos + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
-            noRecognize = DetectVerb(inputLower);
+            noRecognize = DetectDirectionVerb(inputLower);
             if (!noRecognize) {
                 direction = 2;
             }
@@ -223,7 +243,7 @@ void World::ProcessInput(string input) {
         char charBefore = (eastPos == 0) ? ' ' : inputLower[eastPos - 1];
         char charAfter = (eastPos + 5 >= inputLower.size()) ? ' ' : inputLower[eastPos + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
-            noRecognize = DetectVerb(inputLower);
+            noRecognize = DetectDirectionVerb(inputLower);
             if (!noRecognize) {
                 direction = 3;
             }
@@ -237,7 +257,7 @@ void World::ProcessInput(string input) {
         char charBefore = (westPos == 0) ? ' ' : inputLower[westPos - 1];
         char charAfter = (westPos + 5 >= inputLower.size()) ? ' ' : inputLower[westPos + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
-            noRecognize = DetectVerb(inputLower);
+            noRecognize = DetectDirectionVerb(inputLower);
             if (!noRecognize) {
                 direction = 4;
             }
@@ -252,19 +272,62 @@ void World::ProcessInput(string input) {
     else {
         noRecognize = true;
     }
+    if (!LookRooms(direction) && direction != 0) {
+        std::cout << "There's nothing in that direction" << std::endl;
+    }
+
+    //CHECK ITEMS
+
+    size_t egg = inputLower.find("egg");
+    size_t pasta = inputLower.find("pasta");
+    size_t key = inputLower.find("key");
+
+    if (egg != std::string::npos) {
+        //Check if the word has spaces 
+        char charBefore = (egg == 0) ? ' ' : inputLower[egg - 1];
+        //char charAfter = (egg + 5 >= inputLower.size()) ? ' ' : inputLower[egg + 5];
+        if (!std::isalpha(charBefore)){// && !std::isalpha(charAfter)) {
+            noRecognize = DetectActionVerb(inputLower);
+            
+        }
+        else {
+
+            noRecognize = true;
+        }
+    }
+    else if (pasta != std::string::npos) {
+        //Check if the word has spaces 
+        char charBefore = (pasta == 0) ? ' ' : inputLower[pasta - 1];
+        char charAfter = (pasta + 5 >= inputLower.size()) ? ' ' : inputLower[pasta + 5];
+        if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
+            noRecognize = DetectActionVerb(inputLower);
+            
+        }
+        else {
+            noRecognize = true;
+        }
+    }
+    else if (key != std::string::npos) {
+        //Check if the word has spaces 
+        char charBefore = (key == 0) ? ' ' : inputLower[key - 1];
+        char charAfter = (key + 5 >= inputLower.size()) ? ' ' : inputLower[key + 5];
+        if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
+            noRecognize = DetectActionVerb(inputLower);
+            
+        }
+        else {
+            noRecognize = true;
+        }
+    }
 
     if (noRecognize) {
         std::cout << "Comando no reconocido." << std::endl;
     }
-    else {
-        if (!LookRooms(direction)){
-            std::cout << "There's nothing in that direction" << std::endl;
-        }
-    }
+    
 
 }
 
-bool World::DetectVerb(string inputLower) {
+bool World::DetectDirectionVerb(string inputLower) {
     bool noRecognize = true;
 
     size_t goPos = inputLower.find("go");
@@ -274,6 +337,28 @@ bool World::DetectVerb(string inputLower) {
         if (std::isalpha(charAfter)) {
             noRecognize = false;
             
+        }
+        else {
+            noRecognize = true;
+        }
+    }
+
+
+
+    return noRecognize;
+
+}
+
+bool World::DetectActionVerb(string inputLower) {
+    bool noRecognize = true;
+
+    size_t goPos = inputLower.find("get");
+    if (goPos != std::string::npos) {
+        //Check if the word has spaces 
+        char charAfter = (goPos + 5 >= inputLower.size()) ? ' ' : inputLower[goPos + 5];
+        if (std::isalpha(charAfter)) {
+            noRecognize = false;
+
         }
         else {
             noRecognize = true;

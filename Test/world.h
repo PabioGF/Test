@@ -13,11 +13,13 @@ public:
 	World();
 	~World();
 	void ProcessInput(string input);
-	bool DetectVerb(string input);
+	bool DetectDirectionVerb(string input);
+	bool DetectActionVerb(string input);
 	void Start();
 	bool MovePlayer(string neighbor);
 	bool LookRooms(int direction);
 	void RoomDescription();
+	void RoomContainsItem();
 
 public:
 	vector<Entity*> entities;
