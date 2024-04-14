@@ -367,11 +367,22 @@ bool World::LookItems(string itemName, int verb) {
         if (verb == 1) {
             if (selectedItem->GetOwner() == actualRoom) {
                 selectedItem->ChangeOwner(player);
-                std::cout << "You picked the following item: " << selectedItem->GetName() << std::endl;
+                std::cout << "You picked the following item: " << selectedItem->GetName()  << " (" << selectedItem->GetDescription() << ")" << std::endl;
                 theresItem = true;
             }
             else {
                 
+                theresItem = false;
+            }
+        }
+        //DROP ITEMS
+        else if (verb == 2) {
+            if (selectedItem->GetOwner() == player) {
+                selectedItem->ChangeOwner(actualRoom);
+                std::cout << "You droped the following item: " << selectedItem->GetName() << std::endl;
+                theresItem = true;
+            }
+            else {
                 theresItem = false;
             }
         }
@@ -408,12 +419,40 @@ bool World::DetectDirectionVerb(string inputLower) {
 int World::DetectActionVerb(string inputLower) {
     int verb = 0;
 
-    size_t goPos = inputLower.find("get");
-    if (goPos != std::string::npos) {
+    //GET ITEMS
+    size_t getPos = inputLower.find("get");
+    if (getPos != std::string::npos) {
         //Check if the word has spaces 
-        char charAfter = (goPos + 5 >= inputLower.size()) ? ' ' : inputLower[goPos + 5];
+        char charAfter = (getPos + 5 >= inputLower.size()) ? ' ' : inputLower[getPos + 5];
         if (std::isalpha(charAfter)) {
             verb = 1;
+
+        }
+        else {
+            verb = 0;
+        }
+    }
+
+    size_t pickPos = inputLower.find("pick");
+    if (pickPos != std::string::npos) {
+        //Check if the word has spaces 
+        char charAfter = (pickPos + 5 >= inputLower.size()) ? ' ' : inputLower[pickPos + 5];
+        if (std::isalpha(charAfter)) {
+            verb = 1;
+
+        }
+        else {
+            verb = 0;
+        }
+    }
+
+    //DROP ITEMS
+    size_t dropPos = inputLower.find("drop");
+    if (dropPos != std::string::npos) {
+        //Check if the word has spaces 
+        char charAfter = (dropPos + 5 >= inputLower.size()) ? ' ' : inputLower[dropPos + 5];
+        if (std::isalpha(charAfter)) {
+            verb = 2;
 
         }
         else {
