@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 class Entity;
 
 class World {
@@ -14,16 +15,18 @@ public:
 	~World();
 	void ProcessInput(string input);
 	bool DetectDirectionVerb(string input);
-	int DetectActionVerb(string input);
+	int DetectItemVerb(string input);
+	int DetectNpcVerb(string input);
 	void Start();
 	bool MovePlayer(string neighbor);
-	bool LookRooms(int direction);
+	bool LookRooms(string direction);
 	bool LookItems(string item, int verb);
 	void RoomDescription();
 	void RoomContainsSomething();
 
 public:
 	vector<Entity*> entities;
+	
 
 };
 #endif // !EXIT

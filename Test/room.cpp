@@ -7,7 +7,9 @@
 
 using namespace std;
 
-Room::Room(const std::string& name, const std::string& description, const std::string& north, const std::string& south, const std::string& east, const std::string& west) : Entity(name, description), neighborNorth(north), neighborSouth(south), neighborEast(east), neighborWest(west) {}
+Room::Room(const std::string& name, const std::string& description, const std::string& north, const std::string& south, const std::string& east, const std::string& west) : Entity(name, description), neighborNorth(north), neighborSouth(south), neighborEast(east), neighborWest(west) {
+	type: ROOM;
+}
 
 vector<int> Room:: GetExits(Room* actualRoom){
 	vector<int> exits;

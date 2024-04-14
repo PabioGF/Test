@@ -7,18 +7,28 @@
 
 using namespace std;
 
+enum Type
+{
+	ENTITY,
+	CREATURE,
+	PLAYER,
+	NPC,
+	EXIT,
+	ROOM,
+	ITEM
+};
 
 class Entity {
 public:
-	enum type;
+	Type type;
 	string name, description;
 	list<Entity*> contains;
 public:
+	Entity(const std::string& name, const std::string& description) : name(name), description(description) {}
 	virtual void Update();
 	string GetName();
 	string GetDescription();
-	Entity(const std::string& name, const std::string& description): name(name), description(description) {}
-
+	bool LookType(Entity* entity, Type type);
 
 };
 #endif // !EXIT

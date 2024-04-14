@@ -6,7 +6,9 @@
 
 using namespace std;
 
-Creature::Creature(const std::string& name, const std::string& description, Room* location) : Entity(name, description), location(location) {}
+Creature::Creature(const std::string& name, const std::string& description, Room* location) : Entity(name, description), location(location) {
+	type: CREATURE;
+}
 
 Room* Creature::GetRoom() {
 	return location;
