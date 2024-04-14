@@ -11,3 +11,7 @@ Item::Item(const std::string& name, const std::string& description, Entity* owne
 Entity* Item::GetOwner() {
 	return owner;
 }
+
+void Item::ChangeOwner(Entity* newOwner) {
+	owner = newOwner;
+}

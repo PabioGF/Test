@@ -118,7 +118,7 @@ void World::RoomContainsSomething() {
         }
         if (npc) {
             if (npc->GetRoom() == actualRoom) {
-                std::cout << "There's someone in this room: " << npc->GetName() <<"(" << npc->GetDescription() << ")" << std::endl;
+                std::cout << "There's someone in this room: " << npc->GetName() <<" (" << npc->GetDescription() << ")" << std::endl;
 
             }
         }
@@ -287,14 +287,19 @@ void World::ProcessInput(string input) {
     size_t egg = inputLower.find("egg");
     size_t pasta = inputLower.find("pasta");
     size_t key = inputLower.find("key");
+    string item;
+    int verb = 0;
 
     if (egg != std::string::npos) {
         //Check if the word has spaces 
         char charBefore = (egg == 0) ? ' ' : inputLower[egg - 1];
         //char charAfter = (egg + 5 >= inputLower.size()) ? ' ' : inputLower[egg + 5];
         if (!std::isalpha(charBefore)){// && !std::isalpha(charAfter)) {
-            noRecognize = DetectActionVerb(inputLower);
-            
+            verb = DetectActionVerb(inputLower);
+            if (verb != 0) {
+                noRecognize = false;
+                item = "Egg";
+            }
         }
         else {
 
@@ -306,8 +311,11 @@ void World::ProcessInput(string input) {
         char charBefore = (pasta == 0) ? ' ' : inputLower[pasta - 1];
         char charAfter = (pasta + 5 >= inputLower.size()) ? ' ' : inputLower[pasta + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
-            noRecognize = DetectActionVerb(inputLower);
-            
+            verb = DetectActionVerb(inputLower);
+            if (verb != 0) {
+                noRecognize = false;
+                item = "Pasta";
+            }
         }
         else {
             noRecognize = true;
@@ -318,12 +326,19 @@ void World::ProcessInput(string input) {
         char charBefore = (key == 0) ? ' ' : inputLower[key - 1];
         char charAfter = (key + 5 >= inputLower.size()) ? ' ' : inputLower[key + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
-            noRecognize = DetectActionVerb(inputLower);
-            
+            verb = DetectActionVerb(inputLower);
+            if (verb != 0) {
+                noRecognize = false;
+                item = "Key";
+            }
         }
         else {
             noRecognize = true;
         }
+    }
+
+    if (!LookItems(item, verb) && verb != 0) {
+        std::cout << "That item is not here" << std::endl;
     }
 
     if (noRecognize) {
@@ -332,6 +347,41 @@ void World::ProcessInput(string input) {
     
 
 }
+bool World::LookItems(string itemName, int verb) {
+    Item* selectedItem = dynamic_cast<Item*>(entities[7]);;
+    Player* player = dynamic_cast<Player*>(entities[0]);
+    Room* actualRoom = player->GetRoom();
+    bool theresItem = false;
+
+    for (Entity* entity : entities) {
+        Item* item = dynamic_cast<Item*>(entity);
+        if (item) {
+            if (item->GetName() == itemName) {
+                selectedItem = item;
+                
+            }
+        }
+    }
+    if (selectedItem) {
+        //GET ITEM
+        if (verb == 1) {
+            if (selectedItem->GetOwner() == actualRoom) {
+                selectedItem->ChangeOwner(player);
+                std::cout << "You picked the following item: " << selectedItem->GetName() << std::endl;
+                theresItem = true;
+            }
+            else {
+                
+                theresItem = false;
+            }
+        }
+    }
+    
+    return theresItem;
+
+
+}
+
 
 bool World::DetectDirectionVerb(string inputLower) {
     bool noRecognize = true;
@@ -355,24 +405,24 @@ bool World::DetectDirectionVerb(string inputLower) {
 
 }
 
-bool World::DetectActionVerb(string inputLower) {
-    bool noRecognize = true;
+int World::DetectActionVerb(string inputLower) {
+    int verb = 0;
 
     size_t goPos = inputLower.find("get");
     if (goPos != std::string::npos) {
         //Check if the word has spaces 
         char charAfter = (goPos + 5 >= inputLower.size()) ? ' ' : inputLower[goPos + 5];
         if (std::isalpha(charAfter)) {
-            noRecognize = false;
+            verb = 1;
 
         }
         else {
-            noRecognize = true;
+            verb = 0;
         }
     }
 
 
 
-    return noRecognize;
+    return verb;
 
 }

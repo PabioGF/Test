@@ -14,10 +14,11 @@ public:
 	~World();
 	void ProcessInput(string input);
 	bool DetectDirectionVerb(string input);
-	bool DetectActionVerb(string input);
+	int DetectActionVerb(string input);
 	void Start();
 	bool MovePlayer(string neighbor);
 	bool LookRooms(int direction);
+	bool LookItems(string item, int verb);
 	void RoomDescription();
 	void RoomContainsSomething();
 
