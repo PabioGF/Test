@@ -21,6 +21,14 @@ World::World() {
 
     Player*  player = new Player("You", "You are very handsome.",startingRoom);
     Npc* jimmy = new Npc("Jimmy", "He talks a lot, don't talk to him unless is absolutly necessary.", bedroom);
+    jimmy->SetLines("Hey, I didn't see you, thank goodness you're here because I'm dying of boredom and I needed to talk to someone, how are you?");
+    jimmy->SetLines(" Me not very well, the truth the other day my girlfriend and i broke up and it has made me think a lot about life and about what I'm going to do with it.");
+    jimmy->SetLines(" The only thing that always cheers me up is a good egg pasta dish but only Jessica knew how to make it, even is only mix egg an pasta, by the way I have started to invest in NFT, what do you think? ");
+    jimmy->SetLines(" I think I'm going to get rich in the future, and then you'll see how Jessica comes back,");
+    jimmy->SetLines(" speaking of her, the last day we met she was wearing some nike sneakers from the flea market that looked really cool, I think I should talk to her again,");
+    jimmy->SetLines(" you know, just to ask him about the shoes, nothing else, wow, talking so much makes you very hungry, don't you think so too? ");
+    jimmy->SetLines(" What? You need to get in the bathroom? I have the key! Wow, that remembbers me of when... ");
+
     Item* egg = new Item("Egg","An egg, hopes nothing alive inside.", kitchen);
     Item* pasta = new Item("Pasta", "Pasta, you know ho loved pasta? I don't.", kitchen);
     Item* key = new Item("Key", "Key of the door in the bathroom", jimmy);
@@ -139,6 +147,7 @@ bool World::LookRooms(string direction) {
                                 std::cout << "heading " << exit->GetDestination()->GetName() << std::endl;
                                 player->UpdateLocation(exit->GetDestination());
                                 RoomDescription();
+                                RoomContainsSomething();
                             }
                             else {
                                 isLocked = true;
@@ -156,6 +165,7 @@ bool World::LookRooms(string direction) {
                                 std::cout << "heading " << exit->GetDestination()->GetName() << std::endl;
                                 player->UpdateLocation(exit->GetDestination());
                                 RoomDescription();
+                                RoomContainsSomething();
                             }
                             else {
                                 std::cout << exit->GetDestination()->GetName() << " is locked, you need a key. " << std::endl;
@@ -174,6 +184,7 @@ bool World::LookRooms(string direction) {
                                 std::cout << "heading " << exit->GetDestination()->GetName() << std::endl;
                                 player->UpdateLocation(exit->GetDestination());
                                 RoomDescription();
+                                RoomContainsSomething();
                             }
                             else {
                                 std::cout << exit->GetDestination()->GetName() << " is locked, you need a key. " << std::endl;
@@ -192,6 +203,7 @@ bool World::LookRooms(string direction) {
                                 std::cout << "heading " << exit->GetDestination()->GetName() << std::endl;
                                 player->UpdateLocation(exit->GetDestination());
                                 RoomDescription();
+                                RoomContainsSomething();
                             }
                             else {
                                 std::cout << exit->GetDestination()->GetName() << " is locked, you need a key. " << std::endl;
@@ -297,7 +309,7 @@ void World::ProcessInput(string input) {
         }
     }
     else if (inputLower.find("quit") != std::string::npos) {
-        std::cout << "¡Saliendo del juego!" << std::endl;
+        std::cout << "Saliendo del juego!" << std::endl;
     }
     else {
         noRecognize = true;
@@ -385,13 +397,11 @@ void World::ProcessInput(string input) {
         std::cout << "That item is not here" << std::endl;
     }
 
-    if (noRecognize) {
-        std::cout << "Comando no reconocido." << std::endl;
-    }
+
 
     //NPC INTERACIONS
     size_t jimmy = inputLower.find("jimmy");
-
+    string npcName = "";
     if (jimmy != std::string::npos) {
         //Check if the word has spaces 
         char charBefore = (jimmy == 0) ? ' ' : inputLower[jimmy - 1];
@@ -399,6 +409,7 @@ void World::ProcessInput(string input) {
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             verb = DetectNpcVerb(inputLower);
             if (verb != 0) {
+                npcName = "jimmy";
                 noRecognize = false;
             }
         }
@@ -406,11 +417,40 @@ void World::ProcessInput(string input) {
             noRecognize = true;
         }
     }
+
+    if (jimmy != std::string::npos && pasta != std::string::npos) {
+        char charBeforeJim = (jimmy == 0) ? ' ' : inputLower[jimmy - 1];
+        char charAfterJim = (jimmy + 5 >= inputLower.size()) ? ' ' : inputLower[jimmy + 5];
+        char charBeforePasta = (pasta == 0) ? ' ' : inputLower[pasta - 1];
+        char charAfterPasta = (pasta + 5 >= inputLower.size()) ? ' ' : inputLower[pasta + 5];
+        if (!std::isalpha(charBeforeJim) && !std::isalpha(charAfterJim) && !std::isalpha(charBeforePasta) && !std::isalpha(charAfterPasta)) {
+            verb = DetectNpcVerb(inputLower);
+            if (verb != 0) {
+                npcName = "jimmy";
+                item = "Pasta";
+                noRecognize = false;
+
+            }
+        }
+        else {
+            noRecognize = true;
+        }
+    }
+
+    if (verb != 0) {
+        InteractNpcs(npcName, verb);
+    }
+
+    if (noRecognize) {
+        std::cout << "Comando no reconocido." << std::endl;
+    }
+
+
     
 
 }
 
-bool World::InteractNpcs(string npcName, int verb) {
+void World::InteractNpcs(string npcName, int verb) {
     Player* player = dynamic_cast<Player*>(entities[0]);
     Npc* selectedNpc = dynamic_cast<Npc*>(entities[6]);
 
@@ -425,16 +465,21 @@ bool World::InteractNpcs(string npcName, int verb) {
     }
 
     if (selectedNpc) {
-        if (verb == 1) {
-            //Talk to jimmy
+        if (player->GetRoom() == selectedNpc->GetRoom()) {
+            if (verb == 1) {
+                selectedNpc->ShowLines();
+                std::cout << "Your thoughts: Wow, this is endless, bring him the damn egg pasta dish or kill him alredy." << std::endl;
+            }
+            if (verb == 2) {
+                //Kill jimmy
+            }
         }
-        if (verb == 2) {
-            //Kill jimmy
+        else {
+            std::cout << selectedNpc->GetName() << " is not here."<< std::endl;
         }
 
     }
 
-    return false;
 }
 
 
@@ -626,6 +671,7 @@ int World::DetectNpcVerb(string inputLower) {
         //Check if the word has spaces 
         char charAfter = (talkPos + 5 >= inputLower.size()) ? ' ' : inputLower[talkPos + 5];
         if (std::isalpha(charAfter)) {
+
             verb = 1;
 
         }
@@ -640,6 +686,20 @@ int World::DetectNpcVerb(string inputLower) {
     if (killPos != std::string::npos) {
         //Check if the word has spaces 
         char charAfter = (killPos + 5 >= inputLower.size()) ? ' ' : inputLower[killPos + 5];
+        if (std::isalpha(charAfter)) {
+            verb = 2;
+
+        }
+        else {
+            verb = 0;
+        }
+    }
+
+    //GIVE THE DISH
+    size_t givePos = inputLower.find("give");
+    if (givePos != std::string::npos) {
+        //Check if the word has spaces 
+        char charAfter = (givePos + 5 >= inputLower.size()) ? ' ' : inputLower[givePos + 5];
         if (std::isalpha(charAfter)) {
             verb = 2;
 
