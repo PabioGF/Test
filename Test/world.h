@@ -20,7 +20,7 @@ public:
 	void Start();
 	bool MovePlayer(string neighbor);
 	bool LookRooms(string direction);
-	bool LookItems(string item, int verb);
+	bool LookItems(string item, string secondItem, int verb);
 	void RoomDescription();
 	void RoomContainsSomething();
 

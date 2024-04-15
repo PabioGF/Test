@@ -311,7 +311,7 @@ void World::ProcessInput(string input) {
     else if (eastPos != std::string::npos) {
         //Check if the word has spaces 
         char charBefore = (eastPos == 0) ? ' ' : inputLower[eastPos - 1];
-        char charAfter = (eastPos + 5 >= inputLower.size()) ? ' ' : inputLower[eastPos + 5];
+        char charAfter = (eastPos + 4 >= inputLower.size()) ? ' ' : inputLower[eastPos + 4];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             noRecognize = DetectDirectionVerb(inputLower);
             if (!noRecognize) {
@@ -326,7 +326,7 @@ void World::ProcessInput(string input) {
     else if (westPos != std::string::npos) {
         //Check if the word has spaces 
         char charBefore = (westPos == 0) ? ' ' : inputLower[westPos - 1];
-        char charAfter = (westPos + 5 >= inputLower.size()) ? ' ' : inputLower[westPos + 5];
+        char charAfter = (westPos + 4 >= inputLower.size()) ? ' ' : inputLower[westPos + 4];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             noRecognize = DetectDirectionVerb(inputLower);
             if (!noRecognize) {
@@ -344,8 +344,8 @@ void World::ProcessInput(string input) {
     else {
         noRecognize = true;
     }
-    if (!LookRooms(dir) && direction != 0) {
-        
+    if (direction != 0) {
+        LookRooms(dir);
     }
 
     //CHECK ITEMS
@@ -355,11 +355,12 @@ void World::ProcessInput(string input) {
     size_t key = inputLower.find("key");
     string item;
     int verb = 0;
+    string secondItem = "";
 
     if (egg != std::string::npos) {
         //Check if the word has spaces 
         char charBefore = (egg == 0) ? ' ' : inputLower[egg - 1];
-        //char charAfter = (egg + 5 >= inputLower.size()) ? ' ' : inputLower[egg + 5];
+        char charAfter = (egg + 4 >= inputLower.size()) ? ' ' : inputLower[egg + 4];
         if (!std::isalpha(charBefore)){// && !std::isalpha(charAfter)) {
             verb = DetectItemVerb(inputLower);
             if (verb != 0) {
@@ -390,7 +391,7 @@ void World::ProcessInput(string input) {
     else if (key != std::string::npos) {
         //Check if the word has spaces 
         char charBefore = (key == 0) ? ' ' : inputLower[key - 1];
-        char charAfter = (key + 5 >= inputLower.size()) ? ' ' : inputLower[key + 5];
+        char charAfter = (key + 3 >= inputLower.size()) ? ' ' : inputLower[key + 3];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             verb = DetectItemVerb(inputLower);
             if (verb != 0) {
@@ -403,7 +404,30 @@ void World::ProcessInput(string input) {
         }
     }
 
-    if (!LookItems(item, verb) && verb != 0) {
+    if (egg != std::string::npos && pasta != std::string::npos) {
+        char charBeforeEgg = (egg == 0) ? ' ' : inputLower[egg - 1];
+        char charAfterEgg = (egg + 3 >= inputLower.size()) ? ' ' : inputLower[egg + 3];
+        char charBeforePasta = (pasta == 0) ? ' ' : inputLower[pasta - 1];
+        char charAfterPasta = (pasta + 5 >= inputLower.size()) ? ' ' : inputLower[pasta + 5];  
+        if (!std::isalpha(charBeforeEgg) && !std::isalpha(charAfterEgg) && !std::isalpha(charBeforePasta) && !std::isalpha(charAfterPasta)) {
+            verb = DetectItemVerb(inputLower);
+            
+            if (verb == 3) {
+                noRecognize = false;
+                item = "Egg";
+                secondItem = "Pasta";
+                
+            }
+        }
+        else {
+            noRecognize = true;
+        }
+    }
+
+
+   
+
+    if (!LookItems(item, secondItem,verb) && verb != 0) {
         std::cout << "That item is not here" << std::endl;
     }
 
@@ -432,11 +456,13 @@ void World::ProcessInput(string input) {
     
 
 }
-bool World::LookItems(string itemName, int verb) {
-    Item* selectedItem = dynamic_cast<Item*>(entities[7]);;
+bool World::LookItems(string itemName, string secondItem ,int verb) {
+    
+    Item* selectedItem = dynamic_cast<Item*>(entities[7]);
+    Item* secondSelectedItem = dynamic_cast<Item*>(entities[7]);
     Player* player = dynamic_cast<Player*>(entities[0]);
     Room* actualRoom = player->GetRoom();
-    bool theresItem = false;
+    bool theresItem = true;
 
     for (Entity* entity : entities) {
         Item* item = dynamic_cast<Item*>(entity);
@@ -445,9 +471,24 @@ bool World::LookItems(string itemName, int verb) {
                 selectedItem = item;
                 
             }
+
+            if (item->GetName() == secondItem) {
+                //std::cout << "You mixed the item: " << item->GetName() << " with the following item: " << secondItem << std::endl;
+                secondSelectedItem = item;
+            }
+
+            
         }
+
+        
+        
+            
+            
+
     }
-    if (selectedItem) {
+
+   
+   if (selectedItem) {
         //GET ITEM
         if (verb == 1) {
             if (selectedItem->GetOwner() == actualRoom) {
@@ -471,7 +512,23 @@ bool World::LookItems(string itemName, int verb) {
                 theresItem = false;
             }
         }
+        //MIX ITEMS
+        else if (verb == 3) {
+            if (secondSelectedItem) {
+                if (selectedItem->GetOwner() == player && secondSelectedItem->GetOwner() == player) {
+                    selectedItem->ChangeOwner(secondSelectedItem);
+                   std::cout << "You mixed the item: " << selectedItem->GetName() <<" with the following item: " << secondSelectedItem->GetName() <<  "now the item name is " << secondSelectedItem->GetName() <<std::endl;
+                    theresItem = true;
+                }
+                else {
+                    std::cout << "You don't have the items" << std::endl;
+                }
+            }
+        }
     }
+  
+
+
 
    /* if (theresItem) {
         RoomContainsSomething();
@@ -489,7 +546,7 @@ bool World::DetectDirectionVerb(string inputLower) {
     size_t goPos = inputLower.find("go");
     if (goPos != std::string::npos) {
         //Check if the word has spaces 
-        char charAfter = (goPos + 5 >= inputLower.size()) ? ' ' : inputLower[goPos + 5];
+        char charAfter = (goPos + 3 >= inputLower.size()) ? ' ' : inputLower[goPos + 3];
         if (std::isalpha(charAfter)) {
             noRecognize = false;
             
@@ -512,7 +569,7 @@ int World::DetectItemVerb(string inputLower) {
     size_t getPos = inputLower.find("get");
     if (getPos != std::string::npos) {
         //Check if the word has spaces 
-        char charAfter = (getPos + 5 >= inputLower.size()) ? ' ' : inputLower[getPos + 5];
+        char charAfter = (getPos + 4 >= inputLower.size()) ? ' ' : inputLower[getPos + 4];
         if (std::isalpha(charAfter)) {
             verb = 1;
 
@@ -549,6 +606,33 @@ int World::DetectItemVerb(string inputLower) {
         }
     }
 
+    //MIX ITEMS
+
+    size_t mixPos = inputLower.find("mix");
+    if (mixPos != std::string::npos) {
+        //Check if the word has spaces 
+        char charAfter = (mixPos + 4 >= inputLower.size()) ? ' ' : inputLower[mixPos + 4];
+        if (std::isalpha(charAfter)) {
+            verb = 3;
+
+        }
+        else {
+            verb = 0;
+        }
+    }
+
+    size_t putPos = inputLower.find("put");
+    if (putPos != std::string::npos) {
+        //Check if the word has spaces 
+        char charAfter = (putPos + 4 >= inputLower.size()) ? ' ' : inputLower[putPos + 4];
+        if (std::isalpha(charAfter)) {
+            verb = 3;
+
+        }
+        else {
+            verb = 0;
+        }
+    }
 
 
 
