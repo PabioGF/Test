@@ -44,3 +44,18 @@ bool Exit::CheckDirection(Direction dir) {
     }
     
 }
+
+void Exit::LockExit() {
+    locked = true;
+
+}
+
+void Exit::UnlockExit() {
+    locked = false;
+
+}
+
+bool Exit::IsLocked() {
+    return locked;
+
+}

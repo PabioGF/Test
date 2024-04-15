@@ -22,12 +22,16 @@ public:
 	Direction direction;
 	Room* source;
 	Room* destination;
+	bool locked = false;
 
 public:
 	Exit(const std::string& name, const std::string& description, Room* source, Room* destination);
 	Room* GetSource();
 	Room* GetDestination();
 	bool CheckDirection(Direction direction);
+	void LockExit();
+	void UnlockExit();
+	bool IsLocked();
 };
 
 

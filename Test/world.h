@@ -18,12 +18,12 @@ public:
 	int DetectItemVerb(string input);
 	int DetectNpcVerb(string input);
 	void Start();
-	bool MovePlayer(string neighbor);
+	//bool MovePlayer(string neighbor);
 	bool LookRooms(string direction);
 	bool LookItems(string item, string secondItem, int verb);
 	void RoomDescription();
 	void RoomContainsSomething();
-
+	bool InteractNpcs(string npc, int verb);
 public:
 	vector<Entity*> entities;
 	
