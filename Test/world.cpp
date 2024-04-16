@@ -11,7 +11,6 @@
 
 using namespace std;
 
-
 World::World() {
     Room* startingRoom = new Room("Entrance Hall", "You are in the Entrance hall, there's nothig here to see.");
     Room* kitchen = new Room("Kitchen", "Here you can cook you som eggs and pasta that someone left on the fride, unless you are alergic to pasta, or eggs...");
@@ -74,9 +73,12 @@ World::~World() {
 }
 
 void World::Start() {
-    Player* player = dynamic_cast<Player*>(entities[0]);
+    Player* player = nullptr;
+    for (Entity* entity : entities) {
+        player = (Player*)entity->GetEntityByType(PLAYER);
+        break;
 
-    // Show initial infrmation about bplayer and the room he is in
+    }   // Show initial infrmation about bplayer and the room he is in
     if (player) {
         std::cout << player->GetName() << ": " << player->GetDescription() << std::endl;
     }
@@ -88,47 +90,61 @@ void World::Start() {
 }
 
 void World::RoomDescription() {
-    Player* player = dynamic_cast<Player*>(entities[0]);
-    Room* actualRoom = player->GetRoom();
-    vector<string> neighbor;
-    string direction;
-    bool gameEnded = false;
-
+    Player* player = nullptr;
     for (Entity* entity : entities) {
-        Exit* exit = dynamic_cast<Exit*>(entity);
-        if (exit) {
-            if (exit->GetSource() == actualRoom) {
-                std::cout << "  - At " << exit->GetName() << " is the " << exit->GetDestination()->GetName() << std::endl;
-            }
-            else if (actualRoom->GetName() == "Bathroom") {
-                
-                gameEnded = true;
+        player = (Player*)entity->GetEntityByType(PLAYER);
+        break;
+
+    }
+    if (player) {
+        Room* actualRoom = player->GetRoom();
+        vector<string> neighbor;
+        string direction;
+        bool gameEnded = false;
+
+        for (Entity* entity : entities) {
+            Exit* exit = (Exit*)entity->GetEntityByType(EXIT);
+            if (exit) {
+                if (exit->GetSource() == actualRoom) {
+                    std::cout << "  - At " << exit->GetName() << " is the " << exit->GetDestination()->GetName() << std::endl;
+                }
+                else if (actualRoom->GetName() == "Bathroom") {
+
+                    gameEnded = true;
+                }
             }
         }
-    }
-    if (gameEnded) {
-        std::cout << "Ha acabado el juego!" << std::endl;
-        exit(0);
+        if (gameEnded) {
+            std::cout << "Ha acabado el juego!" << std::endl;
+            exit(0);
+        }
     }
 
 }
 void World::RoomContainsSomething() {
-    Player* player = dynamic_cast<Player*>(entities[0]);
-    Room* actualRoom = player->GetRoom();
-
+    Player* player = nullptr;
     for (Entity* entity : entities) {
-        Item* item = dynamic_cast<Item*>(entity);
-        Npc* npc = dynamic_cast<Npc*>(entity);
-        if (item) {
-            if (item->GetOwner() == actualRoom) {
-                std::cout << "There's an item in this room: " << item->GetName() << std::endl;
-                
-            }
-        }
-        if (npc) {
-            if (npc->GetRoom() == actualRoom) {
-                std::cout << "There's someone in this room: " << npc->GetName() <<" (" << npc->GetDescription() << ")" << std::endl;
+        player = (Player*)entity->GetEntityByType(PLAYER);
+        break;
 
+    }
+    if (player) {
+        Room* actualRoom = player->GetRoom();
+
+        for (Entity* entity : entities) {
+            Item* item = (Item*)entity->GetEntityByType(ITEM);
+            Npc* npc = (Npc*)entity->GetEntityByType(NPC);
+            if (item) {
+                if (item->GetOwner() == actualRoom) {
+                    std::cout << "There's an item in this room: " << item->GetName() << std::endl;
+
+                }
+            }
+            if (npc) {
+                if (npc->GetRoom() == actualRoom) {
+                    std::cout << "There's someone in this room: " << npc->GetName() << " (" << npc->GetDescription() << ")" << std::endl;
+
+                }
             }
         }
     }
@@ -137,36 +153,43 @@ void World::RoomContainsSomething() {
 
 
 bool World::LookRooms(string direction) {
-    Player* player = dynamic_cast<Player*>(entities[0]);
-    Room* actualRoom = player->GetRoom();
-    string neighbor;
-    int cont = 0;
     bool theresNeigbor = false;
-    bool isLocked = false;
-    bool hasKey = false;
-
+    Player* player = nullptr;
     for (Entity* entity : entities) {
-        Item* item = dynamic_cast<Item*>(entity);
-
-        if (item) {
-            if (item->GetName() == "Key" && item->GetOwner() == player) {
-                hasKey = true;
-            }
-            
-        }
+        player = (Player*)entity->GetEntityByType(PLAYER);
+        break;
 
     }
+    if (player) {
+        Room* actualRoom = player->GetRoom();
+        string neighbor;
+        int cont = 0;
+       
+        bool isLocked = false;
+        bool hasKey = false;
 
+        for (Entity* entity : entities) {
+            Item* item = (Item*)entity->GetEntityByType(ITEM);
 
-    for (Entity* entity : entities) {
-        Exit* exit = dynamic_cast<Exit*>(entity);
-        if (exit) {
-            if (exit->IsLocked() && hasKey) {
-                exit->UnlockExit();
+            if (item) {
+                if (item->GetName() == "Key" && item->GetOwner() == player) {
+                    hasKey = true;
+                }
+
             }
-            if (exit->GetSource() == actualRoom) {
-                //std::cout << "theresNeigbor " << exit->GetSource()->GetName() << std::endl;
-              
+
+        }
+
+
+        for (Entity* entity : entities) {
+            Exit* exit = (Exit*)entity->GetEntityByType(EXIT);
+            if (exit) {
+                if (exit->IsLocked() && hasKey) {
+                    exit->UnlockExit();
+                }
+                if (exit->GetSource() == actualRoom) {
+                    //std::cout << "theresNeigbor " << exit->GetSource()->GetName() << std::endl;
+
                     if (direction == "north") {
                         if (exit->CheckDirection(NORTH)) {
                             if (!exit->IsLocked()) {
@@ -240,16 +263,18 @@ bool World::LookRooms(string direction) {
 
 
                     }
-                
+
+                }
+
             }
 
         }
-    
+        if (player->GetRoom() == actualRoom && !isLocked) {
+            std::cout << "There's nothing in that direction " << std::endl;
+        }
     }
 
-    if (player->GetRoom() == actualRoom && !isLocked) {
-        std::cout << "There's nothing in that direction "<< std::endl;
-    }
+    
    
     //std::cout << neighbor << std::endl;
     //theresNeigbor = MovePlayer(neighbor);
@@ -437,7 +462,7 @@ void World::ProcessInput(string input) {
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             npcVerb = DetectNpcVerb(inputLower);
             if (npcVerb != 0) {
-                npcName = "jimmy";
+                npcName = "Jimmy";
                 noRecognize = false;
             }
         }
@@ -454,7 +479,7 @@ void World::ProcessInput(string input) {
         if (!std::isalpha(charBeforeJim) && !std::isalpha(charAfterJim) && !std::isalpha(charBeforePasta) && !std::isalpha(charAfterPasta)) {
             npcVerb = DetectNpcVerb(inputLower);
             if (npcVerb != 0) {
-                npcName = "jimmy";
+                npcName = "Jimmy";
                 item = "Pasta";
                 noRecognize = false;
 
@@ -479,89 +504,98 @@ void World::ProcessInput(string input) {
 }
 
 void World::InteractNpcs(string npcName, string itemName, int verb) {
-    Player* player = dynamic_cast<Player*>(entities[0]);
-    Npc* selectedNpc = dynamic_cast<Npc*>(entities[6]);
-    Item* selectedItem = dynamic_cast<Item*>(entities[0]);
-    Item* npcItem = dynamic_cast<Item*>(entities[0]);
-    Room* actualRoom = player->GetRoom();
+    Player* player = nullptr;
     for (Entity* entity : entities) {
-        Npc* npc = dynamic_cast<Npc*>(entity);
-        
-        if (npc) {
-            if (npc->GetName() == npcName) {
-                selectedNpc = npc;
-            }
-        }
+        player = (Player*)entity->GetEntityByType(PLAYER);
+        break;
 
-
-    
     }
-
-
-    if (selectedNpc) {
-
+    if (player) {
+        Npc* selectedNpc = nullptr;
+        Item* selectedItem = nullptr;
+        Item* npcItem = nullptr;
+        Room* actualRoom = player->GetRoom();
         for (Entity* entity : entities) {
-            Item* item = dynamic_cast<Item*>(entity);
-            if (item) {
-                if (item->GetOwner()->GetName() == itemName) {
-                    selectedItem = dynamic_cast<Item*>(item->GetOwner());
-                    
-                }
-                if (item->GetOwner()->GetName() == selectedNpc->GetName()) {
-                    npcItem = item;
-                }
+            Npc* npc = (Npc*)entity->GetEntityByType(NPC);
 
+            if (npc) {
+           
+                if (npc->GetName() == npcName) {
+                    
+                    selectedNpc = npc;
+                }
             }
+
+
+
         }
 
 
-        if (player->GetRoom() == selectedNpc->GetRoom()) {
-            if (verb == 1) {
-                selectedNpc->ShowLines();
-                std::cout << "Your thoughts: Wow, this is endless, bring him the damn egg pasta dish or kill him alredy." << std::endl;
-            }
-            if (verb == 2) {
-                //Kill jimmy
-                if (npcItem) {
-                    npcItem->ChangeOwner(actualRoom);
-                    std::cout << "The following itemwas droped: " << npcItem->GetName() << std::endl;
-                }
+        if (selectedNpc) {
 
-                for (auto it = entities.begin(); it != entities.end(); ++it) {
-                    Npc* npc = dynamic_cast<Npc*>(*it);
-                    if (npc && npc == selectedNpc) { 
-                        delete* it; 
-                        entities.erase(it); 
-                        break; 
+            for (Entity* entity : entities) {
+                Item* item = (Item*)entity->GetEntityByType(ITEM);
+                if (item) {
+                    if (item->GetOwner()->GetName() == itemName) {
+                        selectedItem = (Item*)item->GetOwner()->GetEntityByType(ITEM); 
+
                     }
-                }
+                    if (item->GetOwner()->GetName() == selectedNpc->GetName()) {
+                        npcItem = item;
+                    }
 
-                std::cout << "Your thoughts: Omg, i wasn't serious, ok..." << std::endl;
+                }
             }
-            if (verb == 3) {
-                if (selectedItem) {
-                    if (selectedItem->GetOwner() == player) {
-                        selectedItem->ChangeOwner(selectedNpc);
-                        std::cout << "You gave " << selectedItem->GetName() << " to " << selectedNpc->GetName() << std::endl;
-                        std::cout << selectedNpc->GetName() << ": Wow, thanks! here you have: "<< std::endl;
-                        if (npcItem) {
-                            npcItem->ChangeOwner(player);
-                            std::cout << selectedNpc->GetName() <<" gave you " << npcItem->GetName() << std::endl;
+
+
+            if (player->GetRoom() == selectedNpc->GetRoom()) {
+                if (verb == 1) {
+                    selectedNpc->ShowLines();
+                    std::cout << "Your thoughts: Wow, this is endless, bring him the damn egg pasta dish or kill him alredy." << std::endl;
+                }
+                if (verb == 2) {
+                    //Kill jimmy
+                    if (npcItem) {
+                        npcItem->ChangeOwner(actualRoom);
+                        std::cout << "The following itemwas droped: " << npcItem->GetName() << std::endl;
+                    }
+
+                    for (auto it = entities.begin(); it != entities.end(); ++it) {
+                        Npc* npc = (Npc*)(*it)->GetEntityByType(NPC); 
+                        if (npc && npc == selectedNpc) {
+                            delete* it;
+                            entities.erase(it);
+                            break;
+                        }
+                    }
+
+                    std::cout << "Your thoughts: Omg, i wasn't serious, ok..." << std::endl;
+                }
+                if (verb == 3) {
+                    if (selectedItem) {
+                        if (selectedItem->GetOwner() == player) {
+                            selectedItem->ChangeOwner(selectedNpc);
+                            std::cout << "You gave " << selectedItem->GetName() << " to " << selectedNpc->GetName() << std::endl;
+                            std::cout << selectedNpc->GetName() << ": Wow, thanks! here you have: " << std::endl;
+                            if (npcItem) {
+                                npcItem->ChangeOwner(player);
+                                std::cout << selectedNpc->GetName() << " gave you " << npcItem->GetName() << std::endl;
+                            }
+                        }
+                        else {
+                            std::cout << "you don't have this item" << std::endl;
                         }
                     }
                     else {
                         std::cout << "you don't have this item" << std::endl;
                     }
                 }
-                else {
-                    std::cout << "you don't have this item" << std::endl;
-                }
             }
-        }
-        else {
-            std::cout << selectedNpc->GetName() << " is not here."<< std::endl;
-        }
+            else {
+                std::cout << selectedNpc->GetName() << " is not here." << std::endl;
+            }
 
+        }
     }
 
 }
@@ -570,75 +604,83 @@ void World::InteractNpcs(string npcName, string itemName, int verb) {
 
 bool World::LookItems(string itemName, string secondItem ,int verb) {
     
-    Item* selectedItem = dynamic_cast<Item*>(entities[7]);
-    Item* secondSelectedItem = dynamic_cast<Item*>(entities[7]);
-    Player* player = dynamic_cast<Player*>(entities[0]);
-    Room* actualRoom = player->GetRoom();
+    Item* selectedItem = nullptr;
+    Item* secondSelectedItem = nullptr;
+    Player* player = nullptr;
     bool theresItem = true;
-
     for (Entity* entity : entities) {
-        Item* item = dynamic_cast<Item*>(entity);
-        if (item) {
-            if (item->GetName() == itemName) {
-                selectedItem = item;
-                
-            }
-
-            if (item->GetName() == secondItem) {
-                //std::cout << "You mixed the item: " << item->GetName() << " with the following item: " << secondItem << std::endl;
-                secondSelectedItem = item;
-            }
-
-        }   
+        player = (Player*)entity->GetEntityByType(PLAYER);
+        break;
 
     }
+    if (player) {
+        Room* actualRoom = player->GetRoom();
+        
 
-   
-   if (selectedItem) {
-        //GET ITEM
-        if (verb == 1) {
-            if (selectedItem->GetOwner() == actualRoom) {
-                selectedItem->ChangeOwner(player);
-                std::cout << "You picked the following item: " << selectedItem->GetName()  << " (" << selectedItem->GetDescription() << ")" << std::endl;
-                theresItem = true;
+        for (Entity* entity : entities) {
+            Item* item = (Item*)entity->GetEntityByType(ITEM);
+            if (item) {
+                if (item->GetName() == itemName) {
+                    selectedItem = item;
+
+                }
+
+                if (item->GetName() == secondItem) {
+                    //std::cout << "You mixed the item: " << item->GetName() << " with the following item: " << secondItem << std::endl;
+                    secondSelectedItem = item;
+                }
+
             }
-            else {
-                
-                theresItem = false;
-            }
+
         }
-        //DROP ITEMS
-        else if (verb == 2) {
-            if (selectedItem->GetOwner() == player) {
-                selectedItem->ChangeOwner(actualRoom);
-                std::cout << "You droped the following item: " << selectedItem->GetName() << std::endl;
-                theresItem = true;
-            }
-            else {
-                theresItem = false;
-            }
-        }
-        //MIX ITEMS
-        else if (verb == 3) {
-            if (secondSelectedItem) {
-                if (selectedItem->GetOwner() == player && secondSelectedItem->GetOwner() == player) {
-                    selectedItem->ChangeOwner(secondSelectedItem);
-                   std::cout << "You mixed the item: " << selectedItem->GetName() <<" with the following item: " << secondSelectedItem->GetName() <<  " now the item name is " << secondSelectedItem->GetName() <<std::endl;
+
+
+        if (selectedItem) {
+            //GET ITEM
+            if (verb == 1) {
+                if (selectedItem->GetOwner() == actualRoom) {
+                    selectedItem->ChangeOwner(player);
+                    std::cout << "You picked the following item: " << selectedItem->GetName() << " (" << selectedItem->GetDescription() << ")" << std::endl;
                     theresItem = true;
                 }
                 else {
-                    std::cout << "You don't have the items" << std::endl;
+
+                    theresItem = false;
+                }
+            }
+            //DROP ITEMS
+            else if (verb == 2) {
+                if (selectedItem->GetOwner() == player) {
+                    selectedItem->ChangeOwner(actualRoom);
+                    std::cout << "You droped the following item: " << selectedItem->GetName() << std::endl;
+                    theresItem = true;
+                }
+                else {
+                    theresItem = false;
+                }
+            }
+            //MIX ITEMS
+            else if (verb == 3) {
+                if (secondSelectedItem) {
+                    if (selectedItem->GetOwner() == player && secondSelectedItem->GetOwner() == player) {
+                        selectedItem->ChangeOwner(secondSelectedItem);
+                        std::cout << "You mixed the item: " << selectedItem->GetName() << " with the following item: " << secondSelectedItem->GetName() << " now the item name is " << secondSelectedItem->GetName() << std::endl;
+                        theresItem = true;
+                    }
+                    else {
+                        std::cout << "You don't have the items" << std::endl;
+                    }
                 }
             }
         }
+
+
+
+
+        /* if (theresItem) {
+             RoomContainsSomething();
+         }*/
     }
-  
-
-
-
-   /* if (theresItem) {
-        RoomContainsSomething();
-    }*/
     
     return theresItem;
 

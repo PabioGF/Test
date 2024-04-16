@@ -22,6 +22,7 @@ Exit::Exit(const std::string& name, const std::string& description, Room* source
     else if (name == "west") {
         direction = WEST;
     }
+    type = EXIT;
 }
 
 

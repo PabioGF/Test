@@ -7,7 +7,7 @@
 using namespace std;
 
 Item::Item(const std::string& name, const std::string& description, Entity* owner) : Entity(name, description), owner(owner) {
-	type: ITEM;
+	type = ITEM;
 }
 
 Entity* Item::GetOwner() {

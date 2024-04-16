@@ -6,6 +6,9 @@
 
 using namespace std;
 
+Entity::Entity(const std::string& name, const std::string& description) : name(name), description(description) {
+    contains.push_back(this);
+}
 
 void Entity::Update() {
 
@@ -19,6 +22,11 @@ string Entity::GetDescription() {
 	return description;
 }
 
-bool Entity::LookType(Entity* entity, Type type){
-	return false;
+Entity* Entity::GetEntityByType(Type typeToCheck) {
+    for (Entity* entity : contains) {
+        if (entity->type == typeToCheck) {
+            return entity;
+        }
+    }
+    return nullptr; 
 }

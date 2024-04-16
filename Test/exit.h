@@ -32,6 +32,7 @@ public:
 	void LockExit();
 	void UnlockExit();
 	bool IsLocked();
+	
 };
 
 

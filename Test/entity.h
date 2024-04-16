@@ -24,11 +24,12 @@ public:
 	string name, description;
 	list<Entity*> contains;
 public:
-	Entity(const std::string& name, const std::string& description) : name(name), description(description) {}
+	Entity(const std::string& name, const std::string& description);
 	virtual void Update();
 	string GetName();
 	string GetDescription();
-	bool LookType(Entity* entity, Type type);
-
+	Entity* GetEntityByType(Type type);
+	//bool LookType(Entity* entity, Type type);
+	
 };
 #endif // !EXIT

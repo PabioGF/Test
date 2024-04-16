@@ -8,7 +8,7 @@
 using namespace std;
 
 Room::Room(const std::string& name, const std::string& description) : Entity(name, description) {
-	type: ROOM;
+	type = ROOM;
 }
 
 vector<int> Room:: GetExits(Room* actualRoom){
