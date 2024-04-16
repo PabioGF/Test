@@ -23,7 +23,7 @@ public:
 	bool LookItems(string item, string secondItem, int verb);
 	void RoomDescription();
 	void RoomContainsSomething();
-	void InteractNpcs(string npc, int verb);
+	void InteractNpcs(string npc, string item, int verb);
 public:
 	vector<Entity*> entities;
 	

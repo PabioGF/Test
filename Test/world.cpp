@@ -397,7 +397,9 @@ void World::ProcessInput(string input) {
         std::cout << "That item is not here" << std::endl;
     }
 
+    item = "";
 
+    int npcVerb = 0;
 
     //NPC INTERACIONS
     size_t jimmy = inputLower.find("jimmy");
@@ -407,8 +409,8 @@ void World::ProcessInput(string input) {
         char charBefore = (jimmy == 0) ? ' ' : inputLower[jimmy - 1];
         char charAfter = (jimmy + 5 >= inputLower.size()) ? ' ' : inputLower[jimmy + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
-            verb = DetectNpcVerb(inputLower);
-            if (verb != 0) {
+            npcVerb = DetectNpcVerb(inputLower);
+            if (npcVerb != 0) {
                 npcName = "jimmy";
                 noRecognize = false;
             }
@@ -424,8 +426,8 @@ void World::ProcessInput(string input) {
         char charBeforePasta = (pasta == 0) ? ' ' : inputLower[pasta - 1];
         char charAfterPasta = (pasta + 5 >= inputLower.size()) ? ' ' : inputLower[pasta + 5];
         if (!std::isalpha(charBeforeJim) && !std::isalpha(charAfterJim) && !std::isalpha(charBeforePasta) && !std::isalpha(charAfterPasta)) {
-            verb = DetectNpcVerb(inputLower);
-            if (verb != 0) {
+            npcVerb = DetectNpcVerb(inputLower);
+            if (npcVerb != 0) {
                 npcName = "jimmy";
                 item = "Pasta";
                 noRecognize = false;
@@ -436,9 +438,9 @@ void World::ProcessInput(string input) {
             noRecognize = true;
         }
     }
-
-    if (verb != 0) {
-        InteractNpcs(npcName, verb);
+   
+    if (npcVerb != 0) {
+        InteractNpcs(npcName, item, npcVerb);
     }
 
     if (noRecognize) {
@@ -450,21 +452,32 @@ void World::ProcessInput(string input) {
 
 }
 
-void World::InteractNpcs(string npcName, int verb) {
+void World::InteractNpcs(string npcName, string itemName, int verb) {
     Player* player = dynamic_cast<Player*>(entities[0]);
     Npc* selectedNpc = dynamic_cast<Npc*>(entities[6]);
-
+    Item* selectedItem = dynamic_cast<Item*>(entities[0]);
     for (Entity* entity : entities) {
         Npc* npc = dynamic_cast<Npc*>(entity);
+        Item* item = dynamic_cast<Item*>(entity);
         if (npc) {
             if (npc->GetName() == npcName) {
                 selectedNpc = npc;
             }
         }
+
+        if (item) {
+            if (item->GetOwner()->GetName() == itemName) {
+                selectedItem = dynamic_cast<Item*>(item->GetOwner());
+                
+            }
+            
+        }
     
     }
 
+
     if (selectedNpc) {
+        
         if (player->GetRoom() == selectedNpc->GetRoom()) {
             if (verb == 1) {
                 selectedNpc->ShowLines();
@@ -472,6 +485,20 @@ void World::InteractNpcs(string npcName, int verb) {
             }
             if (verb == 2) {
                 //Kill jimmy
+            }
+            if (verb == 3) {
+                if (selectedItem) {
+                    if (selectedItem->GetOwner() == player) {
+                        selectedItem->ChangeOwner(selectedNpc);
+                        std::cout << " you gave " << selectedItem->GetName() << " to " << selectedNpc->GetName() << std::endl;
+                    }
+                    else {
+                        std::cout << "you don't have this item" << std::endl;
+                    }
+                }
+                else {
+                    std::cout << "you don't have this item" << std::endl;
+                }
             }
         }
         else {
@@ -701,7 +728,7 @@ int World::DetectNpcVerb(string inputLower) {
         //Check if the word has spaces 
         char charAfter = (givePos + 5 >= inputLower.size()) ? ' ' : inputLower[givePos + 5];
         if (std::isalpha(charAfter)) {
-            verb = 2;
+            verb = 3;
 
         }
         else {
