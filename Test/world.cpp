@@ -456,28 +456,38 @@ void World::InteractNpcs(string npcName, string itemName, int verb) {
     Player* player = dynamic_cast<Player*>(entities[0]);
     Npc* selectedNpc = dynamic_cast<Npc*>(entities[6]);
     Item* selectedItem = dynamic_cast<Item*>(entities[0]);
+    Item* npcItem = dynamic_cast<Item*>(entities[0]);
     for (Entity* entity : entities) {
         Npc* npc = dynamic_cast<Npc*>(entity);
-        Item* item = dynamic_cast<Item*>(entity);
+        
         if (npc) {
             if (npc->GetName() == npcName) {
                 selectedNpc = npc;
             }
         }
 
-        if (item) {
-            if (item->GetOwner()->GetName() == itemName) {
-                selectedItem = dynamic_cast<Item*>(item->GetOwner());
-                
-            }
-            
-        }
+
     
     }
 
 
     if (selectedNpc) {
-        
+
+        for (Entity* entity : entities) {
+            Item* item = dynamic_cast<Item*>(entity);
+            if (item) {
+                if (item->GetOwner()->GetName() == itemName) {
+                    selectedItem = dynamic_cast<Item*>(item->GetOwner());
+
+                }
+                if (item->GetOwner()->GetName() == selectedNpc->GetName()) {
+                    npcItem = item;
+                }
+
+            }
+        }
+
+
         if (player->GetRoom() == selectedNpc->GetRoom()) {
             if (verb == 1) {
                 selectedNpc->ShowLines();
@@ -490,7 +500,11 @@ void World::InteractNpcs(string npcName, string itemName, int verb) {
                 if (selectedItem) {
                     if (selectedItem->GetOwner() == player) {
                         selectedItem->ChangeOwner(selectedNpc);
-                        std::cout << " you gave " << selectedItem->GetName() << " to " << selectedNpc->GetName() << std::endl;
+                        std::cout << "You gave " << selectedItem->GetName() << " to " << selectedNpc->GetName() << std::endl;
+                        if (npcItem) {
+                            npcItem->ChangeOwner(player);
+                            std::cout << selectedNpc->GetName() <<" gave you " << npcItem->GetName() << std::endl;
+                        }
                     }
                     else {
                         std::cout << "you don't have this item" << std::endl;
