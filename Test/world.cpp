@@ -92,6 +92,7 @@ void World::RoomDescription() {
     Room* actualRoom = player->GetRoom();
     vector<string> neighbor;
     string direction;
+    bool gameEnded = false;
 
     for (Entity* entity : entities) {
         Exit* exit = dynamic_cast<Exit*>(entity);
@@ -99,7 +100,15 @@ void World::RoomDescription() {
             if (exit->GetSource() == actualRoom) {
                 std::cout << "  - At " << exit->GetName() << " is the " << exit->GetDestination()->GetName() << std::endl;
             }
+            else if (actualRoom->GetName() == "Bathroom") {
+                
+                gameEnded = true;
+            }
         }
+    }
+    if (gameEnded) {
+        std::cout << "Ha acabado el juego!" << std::endl;
+        exit(0);
     }
 
 }
@@ -134,10 +143,27 @@ bool World::LookRooms(string direction) {
     int cont = 0;
     bool theresNeigbor = false;
     bool isLocked = false;
+    bool hasKey = false;
+
+    for (Entity* entity : entities) {
+        Item* item = dynamic_cast<Item*>(entity);
+
+        if (item) {
+            if (item->GetName() == "Key" && item->GetOwner() == player) {
+                hasKey = true;
+            }
+            
+        }
+
+    }
+
 
     for (Entity* entity : entities) {
         Exit* exit = dynamic_cast<Exit*>(entity);
         if (exit) {
+            if (exit->IsLocked() && hasKey) {
+                exit->UnlockExit();
+            }
             if (exit->GetSource() == actualRoom) {
                 //std::cout << "theresNeigbor " << exit->GetSource()->GetName() << std::endl;
               
@@ -457,6 +483,7 @@ void World::InteractNpcs(string npcName, string itemName, int verb) {
     Npc* selectedNpc = dynamic_cast<Npc*>(entities[6]);
     Item* selectedItem = dynamic_cast<Item*>(entities[0]);
     Item* npcItem = dynamic_cast<Item*>(entities[0]);
+    Room* actualRoom = player->GetRoom();
     for (Entity* entity : entities) {
         Npc* npc = dynamic_cast<Npc*>(entity);
         
@@ -478,7 +505,7 @@ void World::InteractNpcs(string npcName, string itemName, int verb) {
             if (item) {
                 if (item->GetOwner()->GetName() == itemName) {
                     selectedItem = dynamic_cast<Item*>(item->GetOwner());
-
+                    
                 }
                 if (item->GetOwner()->GetName() == selectedNpc->GetName()) {
                     npcItem = item;
@@ -495,12 +522,28 @@ void World::InteractNpcs(string npcName, string itemName, int verb) {
             }
             if (verb == 2) {
                 //Kill jimmy
+                if (npcItem) {
+                    npcItem->ChangeOwner(actualRoom);
+                    std::cout << "The following itemwas droped: " << npcItem->GetName() << std::endl;
+                }
+
+                for (auto it = entities.begin(); it != entities.end(); ++it) {
+                    Npc* npc = dynamic_cast<Npc*>(*it);
+                    if (npc && npc == selectedNpc) { 
+                        delete* it; 
+                        entities.erase(it); 
+                        break; 
+                    }
+                }
+
+                std::cout << "Your thoughts: Omg, i wasn't serious, ok..." << std::endl;
             }
             if (verb == 3) {
                 if (selectedItem) {
                     if (selectedItem->GetOwner() == player) {
                         selectedItem->ChangeOwner(selectedNpc);
                         std::cout << "You gave " << selectedItem->GetName() << " to " << selectedNpc->GetName() << std::endl;
+                        std::cout << selectedNpc->GetName() << ": Wow, thanks! here you have: "<< std::endl;
                         if (npcItem) {
                             npcItem->ChangeOwner(player);
                             std::cout << selectedNpc->GetName() <<" gave you " << npcItem->GetName() << std::endl;
