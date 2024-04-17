@@ -29,6 +29,7 @@ public:
 	string GetName();
 	string GetDescription();
 	Entity* GetEntityByType(Type type);
+	Entity* GetEntityByTypeName(Type typeToCheck, string name);
 	//bool LookType(Entity* entity, Type type);
 	
 };

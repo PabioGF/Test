@@ -15,6 +15,7 @@ public:
 	void SetLines(string line);
 	string GetLines(int number);
 	void ShowLines();
+	bool SelectAction(Creature* player, int verb, Entity* npcItem, Entity* selectedItem);
 
 public:
 	vector<string> textLines;

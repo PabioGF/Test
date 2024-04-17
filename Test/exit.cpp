@@ -60,3 +60,15 @@ bool Exit::IsLocked() {
     return locked;
 
 }
+
+bool Exit::GetExits(Room* actualRoom) {
+    bool gameEnded = false;
+    if (GetSource() == actualRoom) {
+        std::cout << "  - At " << GetName() << " is the " << GetDestination()->GetName() << std::endl;
+    }
+    else if (actualRoom->GetName() == "Bathroom") {
+
+        gameEnded = true;
+    }
+    return gameEnded;
+}

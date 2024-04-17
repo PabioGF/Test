@@ -30,3 +30,16 @@ Entity* Entity::GetEntityByType(Type typeToCheck) {
     }
     return nullptr; 
 }
+
+Entity* Entity::GetEntityByTypeName(Type typeToCheck, string name) {
+    for (Entity* entity : contains) {
+        if (entity->type == typeToCheck) {
+            
+            if (entity->GetName() == name) {
+                
+                return entity;
+            }
+        }
+    }
+    return nullptr;
+}
