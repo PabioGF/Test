@@ -175,7 +175,7 @@ bool World::InputDirection(string inputLower) {
 }
 
 /**
-* Handles item-related input from the user
+* Handles item-related or npc-related input from the user
 *
 * @param inputLower The input string from the user, converted to lowercase
 * @return True if the input is not recognized, false otherwise
@@ -341,6 +341,7 @@ void World::ProcessInput(string input) {
         character = std::tolower(character);
     }
     std::cout << "\n" << std::endl;
+
     //CHECK DIRECTIONS
 
     noRecognizeDirection = InputDirection(inputLower);
