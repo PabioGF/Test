@@ -85,7 +85,7 @@ World::~World() {
 */
 
 bool World::InputDirection(string inputLower) {
-    bool noRecognize = false;
+    bool noRecognize = true;
     int direction = 0;
     string dir;
     size_t northPos = inputLower.find("north");
@@ -100,10 +100,12 @@ bool World::InputDirection(string inputLower) {
         char charAfter = (northPos + 5 >= inputLower.size()) ? ' ' : inputLower[northPos + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             noRecognize = DetectDirectionVerb(inputLower);
+            
             if (!noRecognize) {
                 direction = 1;
                 dir = "north";
             }
+           
         }
         else {
 
@@ -121,6 +123,7 @@ bool World::InputDirection(string inputLower) {
                 direction = 2;
                 dir = "south";
             }
+
         }
         else {
             noRecognize = true;
@@ -137,6 +140,7 @@ bool World::InputDirection(string inputLower) {
                 direction = 3;
                 dir = "east";
             }
+
         }
         else {
             noRecognize = true;
@@ -153,6 +157,7 @@ bool World::InputDirection(string inputLower) {
                 direction = 4;
                 dir = "west";
             }
+
         }
         else {
             noRecognize = true;
@@ -161,12 +166,11 @@ bool World::InputDirection(string inputLower) {
     else if (inputLower.find("quit") != std::string::npos) {
         std::cout << "Exiting game..." << std::endl;
     }
-    else {
-        noRecognize = true;
-    }
+
     if (direction != 0) {
         LookRooms(dir);
     }
+    
     return noRecognize;
 }
 
@@ -176,8 +180,8 @@ bool World::InputDirection(string inputLower) {
 * @param inputLower The input string from the user, converted to lowercase
 * @return True if the input is not recognized, false otherwise
 */
-bool World::InputItem(string inputLower) {
-    bool noRecognize = false;
+bool World::InputElement(string inputLower) {
+    bool noRecognize = true;
     size_t egg = inputLower.find("egg");
     size_t pasta = inputLower.find("pasta");
     size_t key = inputLower.find("key");
@@ -191,10 +195,11 @@ bool World::InputItem(string inputLower) {
         char charBefore = (egg == 0) ? ' ' : inputLower[egg - 1];
         char charAfter = (egg + 4 >= inputLower.size()) ? ' ' : inputLower[egg + 4];
         if (!std::isalpha(charBefore)) {// && !std::isalpha(charAfter)) {
+            item = "Egg";
             verb = DetectItemVerb(inputLower);
             if (verb != 0) {
                 noRecognize = false;
-                item = "Egg";
+                
             }
         }
         else {
@@ -208,10 +213,13 @@ bool World::InputItem(string inputLower) {
         char charBefore = (pasta == 0) ? ' ' : inputLower[pasta - 1];
         char charAfter = (pasta + 5 >= inputLower.size()) ? ' ' : inputLower[pasta + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
+            item = "Pasta";
+            
             verb = DetectItemVerb(inputLower);
             if (verb != 0) {
+                
                 noRecognize = false;
-                item = "Pasta";
+                
             }
         }
         else {
@@ -224,10 +232,11 @@ bool World::InputItem(string inputLower) {
         char charBefore = (key == 0) ? ' ' : inputLower[key - 1];
         char charAfter = (key + 3 >= inputLower.size()) ? ' ' : inputLower[key + 3];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
+            item = "Key";
             verb = DetectItemVerb(inputLower);
             if (verb != 0) {
                 noRecognize = false;
-                item = "Key";
+                
             }
         }
         else {
@@ -242,10 +251,11 @@ bool World::InputItem(string inputLower) {
         char charAfterPasta = (pasta + 5 >= inputLower.size()) ? ' ' : inputLower[pasta + 5];
         if (!std::isalpha(charBeforeEgg) && !std::isalpha(charAfterEgg) && !std::isalpha(charBeforePasta) && !std::isalpha(charAfterPasta)) {
             verb = DetectItemVerb(inputLower);
+            item = "Egg";
+            secondItem = "Pasta";
             if (verb != 0) {
                 noRecognize = false;
-                item = "Egg";
-                secondItem = "Pasta";
+
 
             }
         }
@@ -258,23 +268,10 @@ bool World::InputItem(string inputLower) {
         std::cout << "That item is not here" << std::endl;
     }
 
-    item = "";
-    return noRecognize;
-}
 
-
-/**
-* Handles NPC-related input from the user
-*
-* @param inputLower The input string from the user, converted to lowercase
-* @return True if the input is not recognized, false otherwise
-*/
-bool World::InputNpc(string inputLower) {
-    bool noRecognize = false;
     int npcVerb = 0;
     size_t jimmy = inputLower.find("jimmy");
-    size_t pasta = inputLower.find("pasta");
-    string item = "";
+
     string npcName = "";
     //check for jimmy
     if (jimmy != std::string::npos) {
@@ -282,9 +279,10 @@ bool World::InputNpc(string inputLower) {
         char charBefore = (jimmy == 0) ? ' ' : inputLower[jimmy - 1];
         char charAfter = (jimmy + 5 >= inputLower.size()) ? ' ' : inputLower[jimmy + 5];
         if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
+            npcName = "Jimmy";
             npcVerb = DetectNpcVerb(inputLower);
             if (npcVerb != 0) {
-                npcName = "Jimmy";
+                
                 noRecognize = false;
             }
         }
@@ -300,9 +298,10 @@ bool World::InputNpc(string inputLower) {
         char charAfterPasta = (pasta + 5 >= inputLower.size()) ? ' ' : inputLower[pasta + 5];
         if (!std::isalpha(charBeforeJim) && !std::isalpha(charAfterJim) && !std::isalpha(charBeforePasta) && !std::isalpha(charAfterPasta)) {
             npcVerb = DetectNpcVerb(inputLower);
+            npcName = "Jimmy";
+            item = "Pasta";
             if (npcVerb != 0) {
-                npcName = "Jimmy";
-                item = "Pasta";
+;
                 noRecognize = false;
 
             }
@@ -310,17 +309,22 @@ bool World::InputNpc(string inputLower) {
         else {
             noRecognize = true;
         }
-    }
 
+    }
+    if (verb == 4) {
+        if (npcName == "" && item != "") {
+            std::cout << "Who?" << std::endl;
+            noRecognize = false;
+        }
+    }
     if (npcVerb != 0) {
         InteractNpcs(npcName, item, npcVerb);
     }
 
-    if (noRecognize) {
-        std::cout << "Command not found." << std::endl;
-    }
     return noRecognize;
 }
+
+
 
 /**
 * Processes the user input and performs appropriate actions
@@ -330,24 +334,25 @@ bool World::InputNpc(string inputLower) {
 void World::ProcessInput(string input) {
     string inputLower = input;
 
-    bool noRecognize = true;
+    bool noRecognizeDirection = true;
+    bool noRecognizeElement = true;
+    bool noRecognizeNpc= true;
     for (char& character : inputLower) {
         character = std::tolower(character);
     }
     std::cout << "\n" << std::endl;
     //CHECK DIRECTIONS
 
-    noRecognize = InputDirection(inputLower);
+    noRecognizeDirection = InputDirection(inputLower);
 
-    //CHECK ITEMS
+    //CHECK ITEMS or Npcs
 
-    noRecognize = InputItem(inputLower);
+    noRecognizeElement = InputElement(inputLower);
 
-    //NPC INTERACIONS
-    
-    noRecognize = InputNpc(inputLower);
 
-    
+    if (noRecognizeDirection && noRecognizeElement) {
+        std::cout << "Command not found." << std::endl;
+    }
     
 }
 
@@ -602,10 +607,11 @@ bool World::LookItems(string itemName, string secondItem ,int verb) {
             }
 
         }
-
-        //Perform the selected action 
-        if (selectedItem) {
-            theresItem = selectedItem->SelectAction(player, verb, secondSelectedItem);
+        if (verb != 4) {
+            //Perform the selected action 
+            if (selectedItem) {
+                theresItem = selectedItem->SelectAction(player, verb, secondSelectedItem);
+            }
         }
 
     }
@@ -732,7 +738,19 @@ int World::DetectItemVerb(string inputLower) {
         }
     }
 
+    //GIVE THE DISH
+    size_t givePos = inputLower.find("give");
+    if (givePos != std::string::npos) {
+        //Check if the word has spaces 
+        char charAfter = (givePos + 5 >= inputLower.size()) ? ' ' : inputLower[givePos + 5];
+        if (std::isalpha(charAfter)) {
+            verb = 4;
 
+        }
+        else {
+            verb = 0;
+        }
+    }
 
     return verb;
 
@@ -791,6 +809,7 @@ int World::DetectNpcVerb(string inputLower) {
         }
     }
 
+
     //GIVE THE DISH
     size_t givePos = inputLower.find("give");
     if (givePos != std::string::npos) {
@@ -804,7 +823,6 @@ int World::DetectNpcVerb(string inputLower) {
             verb = 0;
         }
     }
-
 
 
 

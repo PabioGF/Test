@@ -25,8 +25,8 @@ public:
 	void RoomContainsSomething();
 	void InteractNpcs(string npc, string item, int verb);
 	bool InputDirection(string inputLower);
-	bool InputItem(string inputLower);
-	bool InputNpc(string inputLower);
+	bool InputElement(string inputLower);
+
 public:
 	vector<Entity*> entities;
 	
