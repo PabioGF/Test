@@ -81,8 +81,13 @@ bool Item::SelectAction(Entity* play, int verb, Item* secondSelectedItem) {
                 theresItem = true;
             }
             else {
-                std::cout << "You don't have those items." << std::endl;
+                theresItem = true;
+                std::cout << "You don't have the items to mix." << std::endl;
             }
+        }
+        else {
+            theresItem = true;
+            std::cout << "You don't have the items to mix." << std::endl;
         }
     }
 

@@ -36,15 +36,13 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
     Exit* exit = (Exit*)entity->GetEntityByType(EXIT);
     if (exit) {
         //If the exit is locked and the player has the key, unlock it
-        if (exit->IsLocked() && hasKey) {
-            exit->UnlockExit();
-        }
+
         if (exit->GetSource() == actualRoom) {
 
             //If there's an exit move player north
             if (direction == "north") {
                 if (exit->CheckDirection(NORTH)) {
-                    if (!exit->IsLocked()) {
+                    if (!exit->IsLocked() || (exit->IsLocked() && hasKey)) {
                         std::cout << "Heading to the " << exit->GetDestination()->GetName() << std::endl;
                         UpdateLocation(exit->GetDestination());
                         hasMoved = true;
@@ -63,7 +61,7 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
             //If there's an exit move player south
             if (direction == "south") {
                 if (exit->CheckDirection(SOUTH)) {
-                    if (!exit->IsLocked()) {
+                    if (!exit->IsLocked() || (exit->IsLocked() && hasKey)) {
                         std::cout << "Heading to the " << exit->GetDestination()->GetName() << std::endl;
                         UpdateLocation(exit->GetDestination());
                         hasMoved = true;
@@ -83,7 +81,7 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
             if (direction == "east") {
 
                 if (exit->CheckDirection(EAST)) {
-                    if (!exit->IsLocked()) {
+                    if (!exit->IsLocked() || (exit->IsLocked() && hasKey)) {
                         std::cout << "Heading to the " << exit->GetDestination()->GetName() << std::endl;
                        UpdateLocation(exit->GetDestination());
                        hasMoved = true;
@@ -103,7 +101,7 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
             if (direction == "west") {
 
                 if (exit->CheckDirection(WEST)) {
-                    if (!exit->IsLocked()) {
+                    if (!exit->IsLocked() || (exit->IsLocked() && hasKey)) {
                         std::cout << "Heading to the " << exit->GetDestination()->GetName() << std::endl;
                         UpdateLocation(exit->GetDestination());
                         hasMoved = true;

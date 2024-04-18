@@ -194,7 +194,7 @@ bool World::InputElement(string inputLower) {
         //Check if the word has spaces 
         char charBefore = (egg == 0) ? ' ' : inputLower[egg - 1];
         char charAfter = (egg + 4 >= inputLower.size()) ? ' ' : inputLower[egg + 4];
-        if (!std::isalpha(charBefore)) {// && !std::isalpha(charAfter)) {
+        if (!std::isalpha(charBefore) && !std::isalpha(charAfter)) {
             item = "Egg";
             verb = DetectItemVerb(inputLower);
             if (verb != 0) {
@@ -249,7 +249,7 @@ bool World::InputElement(string inputLower) {
         char charAfterEgg = (egg + 3 >= inputLower.size()) ? ' ' : inputLower[egg + 3];
         char charBeforePasta = (pasta == 0) ? ' ' : inputLower[pasta - 1];
         char charAfterPasta = (pasta + 5 >= inputLower.size()) ? ' ' : inputLower[pasta + 5];
-        if (!std::isalpha(charBeforeEgg) && !std::isalpha(charAfterEgg) && !std::isalpha(charBeforePasta) && !std::isalpha(charAfterPasta)) {
+        if (!std::isalpha(charBeforeEgg) &&  !std::isalpha(charAfterEgg)  && !std::isalpha(charBeforePasta) && !std::isalpha(charAfterPasta)) {
             verb = DetectItemVerb(inputLower);
             item = "Egg";
             secondItem = "Pasta";
@@ -265,7 +265,7 @@ bool World::InputElement(string inputLower) {
     }
 
     if (!LookItems(item, secondItem, verb) && verb != 0) {
-        std::cout << "That item is not here" << std::endl;
+        std::cout << "Can't do that" << std::endl;
     }
 
 
@@ -479,12 +479,13 @@ bool World::LookRooms(string direction) {
                 if (item->GetOwner() == player) {
                     hasKey = true;
                 }
+                else { hasKey = false; }
 
             }
 
         }
 
-        //We look for the exits and moove the player to the selected one
+        //We look for the exits and move the player to the selected one
         for (Entity* entity : entities) {
             isLocked = player->MovePlayer(entity, hasKey, direction, hasMoved, actualRoom);
             if (hasMoved) {
