@@ -62,25 +62,25 @@ bool Npc::SelectAction(Creature* play, int verb, Entity* itemNpc, Entity* itemSe
         if (player->GetRoom() == GetRoom()) {
             if (verb == 1) {
                 ShowLines();
-                std::cout << "Your thoughts: Wow, this is endless, bring him the damn egg pasta dish or kill him alredy." << std::endl;
+                std::cout << "Your thoughts: Wow, this is endless, either I give him the damn pasta with egg or I'll kill him." << std::endl;
             }
             if (verb == 2) {
                 //Kill jimmy
                 if (npcItem) {
                     npcItem->ChangeOwner(actualRoom);
-                    std::cout << "The following itemwas droped: " << npcItem->GetName() << std::endl;
+                    std::cout << "The following item was dropped: " << npcItem->GetName() << std::endl;
                 }
 
                 npcKilled = true;
 
-                std::cout << "Your thoughts: Omg, i wasn't serious, ok..." << std::endl;
+                std::cout << "Your thoughts: OMG, I wasn't serious, ok..." << std::endl;
             }
             if (verb == 3) {
                 if (selectedItem) {
                     if (selectedItem->GetOwner() == player) {
                         selectedItem->ChangeOwner(this);
                         std::cout << "You gave " << selectedItem->GetName() << " to " << GetName() << std::endl;
-                        std::cout << GetName() << ": Wow, thanks! here you have: " << std::endl;
+                        std::cout << GetName() << ": Wow, thanks! Here you go " << std::endl;
                         if (npcItem) {
                             npcItem->ChangeOwner(player);
                             std::cout << GetName() << " gave you " << npcItem->GetName() << std::endl;

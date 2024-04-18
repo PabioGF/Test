@@ -53,7 +53,7 @@ bool Item::SelectAction(Entity* play, int verb, Item* secondSelectedItem) {
     if (verb == 1) {
         if (GetOwner() == actualRoom) {
             ChangeOwner(player);
-            std::cout << "You picked the following item: " << GetName() << " (" << GetDescription() << ")" << std::endl;
+            std::cout << "You picked up the following item: " << GetName() << " (" << GetDescription() << ")" << std::endl;
             theresItem = true;
         }
         else {
@@ -65,7 +65,7 @@ bool Item::SelectAction(Entity* play, int verb, Item* secondSelectedItem) {
     else if (verb == 2) {
         if (GetOwner() == player) {
             ChangeOwner(actualRoom);
-            std::cout << "You droped the following item: " << GetName() << std::endl;
+            std::cout << "You dropped the following item: " << GetName() << std::endl;
             theresItem = true;
         }
         else {
@@ -81,7 +81,7 @@ bool Item::SelectAction(Entity* play, int verb, Item* secondSelectedItem) {
                 theresItem = true;
             }
             else {
-                std::cout << "You don't have the items" << std::endl;
+                std::cout << "You don't have those items." << std::endl;
             }
         }
     }

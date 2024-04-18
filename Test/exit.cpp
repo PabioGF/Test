@@ -17,16 +17,16 @@ using namespace std;
  * @param destination The destination room of the exit
  */
 Exit::Exit(const std::string& name, const std::string& description, Room* source, Room* destination) : Entity(name, description), source(source), destination(destination) {
-    if (name == "north") {
+    if (name == "north" || name == "North") {
         direction = NORTH;
     }
-    else if (name == "south") {
+    else if (name == "south" || name == "South") {
         direction = SOUTH;
     }
-    else if (name == "east") {
+    else if (name == "east" || name == "East") {
         direction = EAST;
     }
-    else if (name == "west") {
+    else if (name == "west" || name == "West") {
         direction = WEST;
     }
     type = EXIT;
@@ -103,7 +103,7 @@ bool Exit::IsLocked() {
 bool Exit::GetExits(Room* actualRoom) {
     bool gameEnded = false;
     if (GetSource() == actualRoom) {
-        std::cout << "  - At " << GetName() << " is the " << GetDestination()->GetName() << std::endl;
+        std::cout << "  - To the " << GetName() << ", there is the " << GetDestination()->GetName() << std::endl;
     }
     else if (actualRoom->GetName() == "Bathroom") {
 

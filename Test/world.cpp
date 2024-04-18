@@ -14,38 +14,38 @@ using namespace std;
 // Constructor for the World class
 World::World() {
     // Initialize rooms
-    Room* startingRoom = new Room("Entrance Hall", "You are in the Entrance hall, there's nothing here to see.");
-    Room* kitchen = new Room("Kitchen", "Here you can cook you som eggs and pasta that someone left on the fride, unless you are alergic to pasta, or eggs...");
-    Room* livingRoom = new Room("Living Room", "Here is the heart of the house, wit conection with the entrance hall, the bathroom and Jimmy's bedroom.");
-    Room* bedroom = new Room("Bedroom", "Here is Jimmy lying in his bed, hes very bored, he wishes he could talk to somebody.");
+    Room* startingRoom = new Room("Entrance Hall", "You are in the Entrance Hall, there's nothing here to see.");
+    Room* kitchen = new Room("Kitchen", "Here you can cook, in the fridge you find eggs, and in a cupboard there is some pasta.");
+    Room* livingRoom = new Room("Living Room", "Here is the heart of the house, it is connected to the entrance hall, the bathroom and Jimmy's bedroom.");
+    Room* bedroom = new Room("Bedroom", "There is Jimmy lying in his bed, he's very bored, he wishes he could talk to somebody.");
     Room* bathroom = new Room("Bathroom", "A normal bathroom");
 
     // Initialize player
-    Player* player = new Player("You", "You are very handsome, and most important, you need to go to the bathroom.", startingRoom);
+    Player* player = new Player("You", "You are very handsome, and most importantly, you need to go to the bathroom.", startingRoom);
 
     // Initialize NPCs
-    Npc* jimmy = new Npc("Jimmy", "He talks a lot, don't talk to him unless is absolutly necessary.", bedroom);
+    Npc* jimmy = new Npc("Jimmy", "He talks a lot, don't talk to him unless it is absolutely necessary.", bedroom);
     jimmy->SetLines("Hey, I didn't see you, thank goodness you're here because I'm dying of boredom and I needed to talk to someone, how are you?");
-    jimmy->SetLines(" Me not very well, the truth the other day my girlfriend and i broke up and it has made me think a lot about life and about what I'm going to do with it.");
-    jimmy->SetLines(" The only thing that always cheers me up is a good egg pasta dish but only Jessica knew how to make it, even is only mix egg an pasta, by the way I have started to invest in NFT, what do you think? ");
-    jimmy->SetLines(" I think I'm going to get rich in the future, and then you'll see how Jessica comes back,");
-    jimmy->SetLines(" speaking of her, the last day we met she was wearing some nike sneakers from the flea market that looked really cool, I think I should talk to her again,");
-    jimmy->SetLines(" you know, just to ask him about the shoes, nothing else, wow, talking so much makes you very hungry, don't you think so too? ");
-    jimmy->SetLines(" What? You need to get in the bathroom? I have the key! Wow, that remembbers me of when... ");
+    jimmy->SetLines("I'm personally not doing well, the truth the other day my girlfriend and I broke up, it has made me think a lot about life and about what I'm going to do with it.");
+    jimmy->SetLines("The only thing that always cheers me up is a good egg pasta but only Jessica knew how to make it, even though it's only mixing egg and pasta, by the way I have started to invest in NFTs, what do you think? ");
+    jimmy->SetLines("I think I'm going to get rich in the future, and then you'll see how Jessica comes back,");
+    jimmy->SetLines("speaking of her, the last day we met she was wearing some Nike sneakers from the flea market that looked really cool, I think I should talk to her again,");
+    jimmy->SetLines("you know, just to ask her about the shoes, nothing else, wow, talking so much makes me very hungry, does that happen to you too? ");
+    jimmy->SetLines("What? You need to get in the bathroom? I have the key! Wow, that remembers me of the time when... ");
 
     // Initialize items
-    Item* egg = new Item("Egg", "An egg, hopes nothing alive inside.", kitchen);
-    Item* pasta = new Item("Pasta", "Pasta, you know ho loved pasta? I don't.", kitchen);
-    Item* key = new Item("Key", "Key of the door in the bathroom", jimmy);
+    Item* egg = new Item("Egg", "Hopefully a regular egg, without a chick inside.", kitchen);
+    Item* pasta = new Item("Pasta", "Pasta, you know who loved pasta? I don't.", kitchen);
+    Item* key = new Item("Key", "Key for the bathroom's door.", jimmy);
 
     // Initialize exits
-    Exit* exit1 = new Exit("south", "path to kitchen", startingRoom, kitchen);
-    Exit* exit2 = new Exit("north", "path to entrance", kitchen, startingRoom);
-    Exit* exit3 = new Exit("east", "path to living room", startingRoom, livingRoom);
-    Exit* exit4 = new Exit("west", "path to entrance", livingRoom, startingRoom);
-    Exit* exit5 = new Exit("east", "path to bedroom", livingRoom, bedroom);
-    Exit* exit6 = new Exit("west", "path to living room", bedroom, livingRoom);
-    Exit* exit7 = new Exit("north", "path living room and bathroom", livingRoom, bathroom);
+    Exit* exit1 = new Exit("South", "Path to the Kitchen", startingRoom, kitchen);
+    Exit* exit2 = new Exit("North", "Path to the Entrance", kitchen, startingRoom);
+    Exit* exit3 = new Exit("East", "Path to the Living Room", startingRoom, livingRoom);
+    Exit* exit4 = new Exit("West", "Path to the Entrance", livingRoom, startingRoom);
+    Exit* exit5 = new Exit("East", "Path to the Bedroom", livingRoom, bedroom);
+    Exit* exit6 = new Exit("West", "Path to the Living Room", bedroom, livingRoom);
+    Exit* exit7 = new Exit("North", "Path to the Living Room and the Bathroom", livingRoom, bathroom);
     exit7->LockExit();
 
     // Push entities to the world entities vector
@@ -159,7 +159,7 @@ bool World::InputDirection(string inputLower) {
         }
     }
     else if (inputLower.find("quit") != std::string::npos) {
-        std::cout << "Saliendo del juego!" << std::endl;
+        std::cout << "Exiting game..." << std::endl;
     }
     else {
         noRecognize = true;
@@ -317,7 +317,7 @@ bool World::InputNpc(string inputLower) {
     }
 
     if (noRecognize) {
-        std::cout << "Comando no reconocido." << std::endl;
+        std::cout << "Command not found." << std::endl;
     }
     return noRecognize;
 }
@@ -334,7 +334,7 @@ void World::ProcessInput(string input) {
     for (char& character : inputLower) {
         character = std::tolower(character);
     }
-
+    std::cout << "\n" << std::endl;
     //CHECK DIRECTIONS
 
     noRecognize = InputDirection(inputLower);
@@ -347,8 +347,8 @@ void World::ProcessInput(string input) {
     
     noRecognize = InputNpc(inputLower);
 
-
-
+    
+    
 }
 
 
@@ -368,10 +368,11 @@ void World::Start() {
         std::cout << player->GetName() << ": " << player->GetDescription() << std::endl;
     }
     else {
-        std::cout << "No se ha encontrado el jugador en el mundo." << std::endl;
+        std::cout << "Player could not be found in world." << std::endl;
     }
     
     RoomDescription();
+    RoomContainsSomething();
 }
 
 /**
@@ -398,11 +399,12 @@ void World::RoomDescription() {
             }
         }
         if (gameEnded) {
-            std::cout << "Ha acabado el juego!" << std::endl;
+            std::cout << "The game has ended!" << std::endl;
             exit(0);
         }
     }
 
+    
 }
 
 /**

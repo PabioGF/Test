@@ -45,7 +45,7 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
             if (direction == "north") {
                 if (exit->CheckDirection(NORTH)) {
                     if (!exit->IsLocked()) {
-                        std::cout << "heading " << exit->GetDestination()->GetName() << std::endl;
+                        std::cout << "Heading to the " << exit->GetDestination()->GetName() << std::endl;
                         UpdateLocation(exit->GetDestination());
                         hasMoved = true;
                     }
@@ -64,7 +64,7 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
             if (direction == "south") {
                 if (exit->CheckDirection(SOUTH)) {
                     if (!exit->IsLocked()) {
-                        std::cout << "heading " << exit->GetDestination()->GetName() << std::endl;
+                        std::cout << "Heading to the " << exit->GetDestination()->GetName() << std::endl;
                         UpdateLocation(exit->GetDestination());
                         hasMoved = true;
                     }
@@ -84,7 +84,7 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
 
                 if (exit->CheckDirection(EAST)) {
                     if (!exit->IsLocked()) {
-                        std::cout << "heading " << exit->GetDestination()->GetName() << std::endl;
+                        std::cout << "Heading to the " << exit->GetDestination()->GetName() << std::endl;
                        UpdateLocation(exit->GetDestination());
                        hasMoved = true;
                     }
@@ -104,7 +104,7 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
 
                 if (exit->CheckDirection(WEST)) {
                     if (!exit->IsLocked()) {
-                        std::cout << "heading " << exit->GetDestination()->GetName() << std::endl;
+                        std::cout << "Heading to the " << exit->GetDestination()->GetName() << std::endl;
                         UpdateLocation(exit->GetDestination());
                         hasMoved = true;
                     }
