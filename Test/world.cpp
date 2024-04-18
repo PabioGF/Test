@@ -633,6 +633,19 @@ bool World::DetectDirectionVerb(string inputLower) {
         }
     }
 
+    size_t movePos = inputLower.find("move");
+    if (movePos != std::string::npos) {
+        //Check if the word has spaces 
+        char charAfter = (movePos + 5 >= inputLower.size()) ? ' ' : inputLower[movePos + 5];
+        if (std::isalpha(charAfter)) {
+            noRecognize = false;
+
+        }
+        else {
+            noRecognize = true;
+        }
+    }
+
 
 
     return noRecognize;
