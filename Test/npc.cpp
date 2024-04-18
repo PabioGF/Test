@@ -9,18 +9,29 @@
 
 using namespace std;
 
+/**
+ * Constructs an NPC object with the given name, description, and location.
+ *
+ * @param name The name of the NPC
+ * @param description The description of the NPC
+ * @param location The room where the NPC is located
+ */
 Npc::Npc(const std::string& name, const std::string& description, Room* location) : Creature(name, description, location) {
 	type = NPC;
 }
 
+/**
+ * Sets the lines of dialogue for the NPC.
+ *
+ * @param lines The lines of dialogue to be set
+ */
 void Npc::SetLines(string lines) {
 	textLines.push_back(lines);
 }
 
-string Npc::GetLines(int number) {
-	return textLines[number];
-}
-
+/**
+ * Displays all the lines of dialogue for the NPC.
+ */
 void Npc::ShowLines() {
     std::cout << "Jimmy: ";
     for (size_t i = 0; i < textLines.size(); i++) {
@@ -32,7 +43,15 @@ void Npc::ShowLines() {
     std::cout << std::endl;
 }
 
-
+/**
+ * Performs the selected action on the NPC.
+ *
+ * @param play The creature performing the action (usually the player)
+ * @param verb The type of interaction verb: 1 for 'talk', 2 for 'kill', 3 for 'give'
+ * @param itemNpc The item related to the NPC (optional)
+ * @param itemSelected The item selected by the player (optional)
+ * @return True if the NPC was killed during the action, false otherwise
+ */
 bool Npc::SelectAction(Creature* play, int verb, Entity* itemNpc, Entity* itemSelected) {
     bool npcKilled = false;
     Player* player = (Player*)play;

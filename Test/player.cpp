@@ -9,21 +9,39 @@
 
 using namespace std;
 
+/**
+ * Constructs a player object with the given name, description, and starting location.
+ *
+ * @param name The name of the player
+ * @param description The description of the player
+ * @param location The starting location of the player
+ */
 Player::Player(const std::string& name, const std::string& description, Room* location): Creature(name, description, location){
 	type = PLAYER;
 }
 
+/**
+ * Moves the player to the specified direction.
+ *
+ * @param entity The exit entity representing the direction to move
+ * @param hasKey Indicates whether the player has the necessary key to unlock the exit
+ * @param direction The direction in which the player intends to move
+ * @param hasMoved A reference boolean indicating whether the player has successfully moved
+ * @param actualRoom The current room of the player
+ * @return True if the exit is locked, false otherwise
+ */
 bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& hasMoved, Room* actualRoom) {
 	bool isLocked = false;
 
     Exit* exit = (Exit*)entity->GetEntityByType(EXIT);
     if (exit) {
+        //If the exit is locked and the player has the key, unlock it
         if (exit->IsLocked() && hasKey) {
             exit->UnlockExit();
         }
         if (exit->GetSource() == actualRoom) {
-            //std::cout << "theresNeigbor " << exit->GetSource()->GetName() << std::endl;
 
+            //If there's an exit move player north
             if (direction == "north") {
                 if (exit->CheckDirection(NORTH)) {
                     if (!exit->IsLocked()) {
@@ -42,6 +60,7 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
 
 
             }
+            //If there's an exit move player south
             if (direction == "south") {
                 if (exit->CheckDirection(SOUTH)) {
                     if (!exit->IsLocked()) {
@@ -60,7 +79,7 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
 
 
             }
-
+            //If there's an exit move player east
             if (direction == "east") {
 
                 if (exit->CheckDirection(EAST)) {
@@ -80,7 +99,7 @@ bool Player::MovePlayer(Entity* entity, bool hasKey, string direction, bool& has
 
 
             }
-
+            //If there's an exit move player west
             if (direction == "west") {
 
                 if (exit->CheckDirection(WEST)) {

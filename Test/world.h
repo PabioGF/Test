@@ -19,12 +19,14 @@ public:
 	int DetectItemVerb(string input);
 	int DetectNpcVerb(string input);
 	void Start();
-	//bool MovePlayer(string neighbor);
 	bool LookRooms(string direction);
 	bool LookItems(string item, string secondItem, int verb);
 	void RoomDescription();
 	void RoomContainsSomething();
 	void InteractNpcs(string npc, string item, int verb);
+	bool InputDirection(string inputLower);
+	bool InputItem(string inputLower);
+	bool InputNpc(string inputLower);
 public:
 	vector<Entity*> entities;
 	

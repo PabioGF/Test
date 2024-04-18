@@ -14,10 +14,6 @@ public:
 
 public:
 	Room(const std::string& name, const std::string& description);
-	vector<int> GetExits(Room* room);
-
-	//void AddEntity(Entity* entity);
-
 
 };
 

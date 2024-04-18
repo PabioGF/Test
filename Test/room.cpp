@@ -7,16 +7,14 @@
 
 using namespace std;
 
+/**
+ * Constructs a room object with the given name and description.
+ *
+ * @param name The name of the room
+ * @param description The description of the room
+ */
 Room::Room(const std::string& name, const std::string& description) : Entity(name, description) {
 	type = ROOM;
 }
 
-vector<int> Room:: GetExits(Room* actualRoom){
-	vector<int> exits;
-
-
-
-
-	return exits;
-}
 
