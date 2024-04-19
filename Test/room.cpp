@@ -17,4 +17,6 @@ Room::Room(const std::string& name, const std::string& description) : Entity(nam
 	type = ROOM;
 }
 
-
+Room::~Room()
+{
+}

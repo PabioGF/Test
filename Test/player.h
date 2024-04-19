@@ -13,5 +13,6 @@ using namespace std;
 class Player : public Creature {
 public:
 	Player(const std::string& name, const std::string& description, Room* location);
+	~Player();
 	bool MovePlayer(Entity* entity, bool hasKey, string direction, bool& hasMoved, Room* room);
 };

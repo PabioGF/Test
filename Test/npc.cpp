@@ -20,6 +20,10 @@ Npc::Npc(const std::string& name, const std::string& description, Room* location
 	type = NPC;
 }
 
+Npc::~Npc()
+{
+}
+
 /**
  * Sets the lines of dialogue for the NPC.
  *

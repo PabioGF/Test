@@ -14,7 +14,7 @@ public:
 
 public:
 	Room(const std::string& name, const std::string& description);
-
+	~Room();
 };
 
 #endif // !EXIT

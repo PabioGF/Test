@@ -18,6 +18,8 @@ Item::Item(const std::string& name, const std::string& description, Entity* owne
 	type = ITEM;
 }
 
+Item::~Item()
+{}
 
 /**
  * Gets the owner of the item.

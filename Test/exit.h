@@ -26,6 +26,7 @@ public:
 
 public:
 	Exit(const std::string& name, const std::string& description, Room* source, Room* destination);
+	~Exit();
 	Room* GetSource();
 	Room* GetDestination();
 	bool GetExits(Room* actualRoom);

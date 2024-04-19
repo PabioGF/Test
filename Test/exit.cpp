@@ -32,6 +32,10 @@ Exit::Exit(const std::string& name, const std::string& description, Room* source
     type = EXIT;
 }
 
+Exit::~Exit()
+{
+}
+
 /**
  * Retrieves the source room of the exit.
  *

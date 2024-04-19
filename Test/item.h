@@ -13,6 +13,7 @@ public:
 	Entity* owner;
 public:
 	Item(const std::string& name, const std::string& description, Entity* owner);
+	~Item();
 	Entity* GetOwner();
 	void ChangeOwner(Entity* newOwner);
 	bool SelectAction(Entity* player, int verb, Item* secondItem);

@@ -13,8 +13,12 @@ using namespace std;
  * @param description The description of the entity
  */
 Entity::Entity(const std::string& name, const std::string& description) : name(name), description(description) {
+    type = ENTITY;
     contains.push_back(this);
 }
+
+Entity::~Entity()
+{}
 
 /**
  * Updates the entity.

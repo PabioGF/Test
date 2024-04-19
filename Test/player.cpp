@@ -20,6 +20,10 @@ Player::Player(const std::string& name, const std::string& description, Room* lo
 	type = PLAYER;
 }
 
+Player::~Player()
+{
+}
+
 /**
  * Moves the player to the specified direction.
  *

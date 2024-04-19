@@ -16,6 +16,7 @@ class Room;
 class Creature: public Entity {
 public:
 	Creature(const std::string& name, const std::string& description, Room* location);
+	~Creature();
 	Room* GetRoom();
 	void UpdateLocation(Room* location);
 private:

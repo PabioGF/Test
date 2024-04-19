@@ -17,6 +17,9 @@ Creature::Creature(const std::string& name, const std::string& description, Room
 	type = CREATURE;
 }
 
+Creature::~Creature()
+{}
+
 /**
  * Retrieves the room where the creature is located.
  *

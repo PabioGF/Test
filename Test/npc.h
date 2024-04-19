@@ -12,6 +12,7 @@ using namespace std;
 class Npc : public Creature {
 public:
 	Npc(const std::string& name, const std::string& description, Room* location);
+	~Npc();
 	void SetLines(string line);
 	void ShowLines();
 	bool SelectAction(Creature* player, int verb, Entity* npcItem, Entity* selectedItem);

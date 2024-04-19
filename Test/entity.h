@@ -25,6 +25,7 @@ public:
 	list<Entity*> contains;
 public:
 	Entity(const std::string& name, const std::string& description);
+	virtual ~Entity();
 	virtual void Update();
 	string GetName();
 	string GetDescription();
