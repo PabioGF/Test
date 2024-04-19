@@ -76,7 +76,6 @@ World::~World() {
     }
 }
 
-
 /**
 * Handles directional input from the user
 *
